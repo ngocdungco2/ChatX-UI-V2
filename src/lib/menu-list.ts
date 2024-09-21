@@ -44,8 +44,11 @@ export function getMenuList(pathname: string): Group[] {
       setHistory(formattedData);
     }
   };
+
   useEffect(() => {
     getHistory();
+    const data = localStorage.getItem("activeBot");
+    data ? setLocalApi(data) : null;
   }, []);
   return [
     {

@@ -9,6 +9,7 @@ export interface Message {
 
 // TODO: handle error every request
 
+// Send message
 export const sendMessage = async (
   question: string,
   chatId: string,
@@ -34,11 +35,11 @@ export const sendMessage = async (
     const data = await res.json();
     return data; // Trả về kết quả
   } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error; // Ném lỗi nếu có
+    throw new Error("Cant not send message");
   }
 };
 
+// Previus chat
 export const getHistoryChat = async (
   userId: string,
   conversationId: string,
@@ -51,19 +52,40 @@ export const getHistoryChat = async (
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // TODO: replace with dynamic token
           Authorization: `Bearer ${token}`
         }
       }
     );
 
     const data = await res.json();
-    // console.log(data);
     return data;
   } catch (error) {
-    console.error("Error get history chat:", error);
+    // console.error("Error get history chat:", error);
+    throw new Error("Cant not fetch previus chat with Bot");
   }
 };
+
+// Chat history for sidebar
+export const getHistoryConversation = async (name: string, token: string) => {
+  try {
+    const res = await fetch(
+      `https://api.chatx.vn/v1/conversations?user=${name}&limit=7`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    const data = res.json();
+    return data;
+  } catch (error) {
+    // console.error("get history chat: ", error);
+    throw new Error("History conversation fetch failed");
+  }
+};
+
 // decrapated
 // export const continueMessage = async (
 //   question: string,
@@ -89,23 +111,3 @@ export const getHistoryChat = async (
 //     console.error("Error while continue to chat:", error);
 //   }
 // };
-// lịch sử chat
-export const getHistoryConversation = async (name: string, token: string) => {
-  try {
-    const res = await fetch(
-      `https://api.chatx.vn/v1/conversations?user=${name}&limit=7`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-    const data = res.json();
-    return data;
-  } catch (error) {
-    // console.error("get history chat: ", error);
-    return { message: "Cant get history conversation" };
-  }
-};

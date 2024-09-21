@@ -14,6 +14,7 @@ import { SendIcon } from "lucide-react";
 import { Badge } from "../ui/badge";
 import Loading from "@/app/(demo)/dashboard/loading";
 import { cn } from "@/lib/utils";
+import AboutCard from "../about";
 type Props = {
   id?: string;
 };
@@ -95,8 +96,7 @@ export default function PlaceholderContent1({ id }: Props) {
     <div className="group w-full overflow-auto  min-h-[calc(100vh-56px-64px-20px-24px-56px-48px)">
       {messages.length <= 0 ? (
         pathname === "/dashboard" ? (
-          // <AboutCard />
-          <h1>main page</h1>
+          <AboutCard />
         ) : (
           <Loading />
           // <h1>Loading</h1>

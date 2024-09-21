@@ -12,15 +12,13 @@ import {
   SheetTitle,
   SheetTrigger
 } from "@/components/ui/sheet";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 type Props = {
   isOpen: boolean | undefined;
 };
 export function SheetName({ isOpen }: Props) {
-  const toast = useToast();
   const [input, setInput] = useState("");
   const handleClick = () => {
     localStorage.setItem("username", input);
@@ -62,12 +60,7 @@ export function SheetName({ isOpen }: Props) {
         </div>
         <SheetFooter>
           <SheetClose asChild>
-            <Button
-              type="submit"
-              onClick={() => {
-                handleClick;
-              }}
-            >
+            <Button type="submit" onClick={() => handleClick()}>
               Save changes
             </Button>
           </SheetClose>

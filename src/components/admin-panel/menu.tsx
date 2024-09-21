@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { AtomIcon, Ellipsis, LogOut, Plus } from "lucide-react";
+import { Ellipsis, LogOut } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-
 import { cn } from "@/lib/utils";
 import { getMenuList } from "@/lib/menu-list";
 import { Button } from "@/components/ui/button";
@@ -16,18 +15,6 @@ import {
   TooltipProvider
 } from "@/components/ui/tooltip";
 import { SheetName } from "../nameSheet";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
-} from "../ui/sheet";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { SheetBot } from "../bot-sheet";
 
 interface MenuProps {
