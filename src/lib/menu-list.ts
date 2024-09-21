@@ -14,6 +14,7 @@ type Submenu = {
   href: string;
   label: string;
   active: boolean;
+  key?: string;
 };
 
 type Menu = {
@@ -32,12 +33,16 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
   const [history, setHistory] = useState<{ id: string; name: string }[]>([]);
 
-  const [localApi, setLocalApi] = useState("app-j53bsW5LjZA7E7O3K5aPWREu");
-  // TODO: handle error
+  const [activeBot, setActiveBot] = useState("");
+  const [listBot, setListBot] = useState<{ name: string; key: string }[]>([]);
+
+  const [localApi, setLocalApi] = useState("");
 
   const getHistory = async () => {
-    const get = await getHistoryConversation("abc-123", localApi);
-    if (history) {
+    const get = await getHistoryConversation("abc-123", activeBot);
+    if (get.data === undefined) {
+      return null;
+    } else {
       const formattedData = get.data.flatMap((msg: any) => [
         { id: msg.id, name: msg.name }
       ]);
@@ -45,11 +50,23 @@ export function getMenuList(pathname: string): Group[] {
     }
   };
 
+  const getListBot = () => {
+    const data = localStorage.getItem("apiKey");
+    if (data) {
+      setListBot(JSON.parse(data));
+    }
+  };
+
+  useEffect(() => {
+    // getHistory();
+    const data = localStorage.getItem("activeBot");
+    data ? setActiveBot(data) : null;
+    // getHistory();
+    getListBot();
+  }, []);
   useEffect(() => {
     getHistory();
-    const data = localStorage.getItem("activeBot");
-    data ? setLocalApi(data) : null;
-  }, []);
+  }, [activeBot]);
   return [
     {
       groupLabel: "",
@@ -80,16 +97,17 @@ export function getMenuList(pathname: string): Group[] {
           ]
         },
         {
-          href: "/categories",
+          href: "#",
           label: "Bot list",
           active: pathname.includes("/categories"),
           icon: List,
           submenus: [
-            {
-              href: "/tags",
-              label: "Bot 1",
-              active: pathname.includes("/tags")
-            }
+            ...listBot.map((item) => ({
+              href: "#",
+              label: item.name,
+              active: pathname === `#`,
+              key: item.key
+            }))
           ]
         },
         {

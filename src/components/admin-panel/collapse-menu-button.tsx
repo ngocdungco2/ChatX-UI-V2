@@ -26,11 +26,14 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 type Submenu = {
   href: string;
   label: string;
   active: boolean;
+  key?: string;
 };
 
 interface CollapseMenuButtonProps {
@@ -50,7 +53,15 @@ export function CollapseMenuButton({
 }: CollapseMenuButtonProps) {
   const isSubmenuActive = submenus.some((submenu) => submenu.active);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
-
+  const router = useRouter();
+  const setActiveKey = (key: string | undefined) => {
+    if (key) {
+      localStorage.setItem("activeBot", key);
+      revalidatePath("/dashboard", "layout");
+    } else {
+      return null;
+    }
+  };
   return isOpen ? (
     <Collapsible
       open={isCollapsed}
@@ -98,14 +109,16 @@ export function CollapseMenuButton({
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-        {submenus.map(({ href, label, active }, index) => (
+        {submenus.map(({ href, label, active, key }, index) => (
+          // this
           <Button
             key={index}
             variant={active ? "secondary" : "ghost"}
             className="w-full justify-start h-10 mb-1"
+            onClick={() => setActiveKey(key)}
             asChild
           >
-            <Link href={href}>
+            <Link href={key ? "/dashboard" : href} scroll={false}>
               <span className="mr-4 ml-2">
                 <Dot size={18} />
               </span>

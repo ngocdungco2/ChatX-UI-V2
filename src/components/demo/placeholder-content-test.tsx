@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useEffect, useRef, useState } from "react";
+import { act, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import { getHistoryChat, sendMessage } from "@/action/request";
@@ -24,6 +24,7 @@ export default function PlaceholderContent1({ id }: Props) {
     []
   );
   const [chatId, setChatId] = useState(id || "");
+  const [activeBot, setActiveBot] = useState("");
   const pathname = usePathname();
   //scroll down when load
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -33,13 +34,7 @@ export default function PlaceholderContent1({ id }: Props) {
 
   const [input, setInput] = useState<string>("");
 
-  // const [localApi, setLocalApi] = useState(
-  //   localStorage.getItem("activeBot") || null
-  // );
   // TODO: handle error
-  // if (!localApi) {
-  //   throw ErrorBoundary;
-  // }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Lấy tin nhắn người dùng
@@ -52,11 +47,7 @@ export default function PlaceholderContent1({ id }: Props) {
     ]);
     setInput("");
 
-    const result = await sendMessage(
-      input,
-      chatId,
-      "app-j53bsW5LjZA7E7O3K5aPWREu"
-    );
+    const result = await sendMessage(input, chatId, activeBot);
     setChatId(result.conversation_id);
     setMessages((prev) => [
       ...prev,
@@ -67,28 +58,28 @@ export default function PlaceholderContent1({ id }: Props) {
     ]);
   };
   const getPrevChat = async () => {
-    // TODO: remove static data
-    const history = await getHistoryChat(
-      "abc-123",
-      chatId,
-      "app-j53bsW5LjZA7E7O3K5aPWREu"
-    );
-    if (chatId) {
+    // TODO: handle error
+    const history = await getHistoryChat("abc-123", chatId, activeBot);
+    console.log(history);
+    if (chatId !== "" && activeBot !== "") {
       const formattedMessages = history.data.flatMap((msg: any) => [
         { role: "user", content: msg.query }, // Tin nhắn của người dùng
         { role: "assistant", content: msg.answer } // Tin nhắn của API
       ]);
       // Cập nhật state messages
       setMessages(formattedMessages);
+    } else {
+      console.log("Khong co chatid");
     }
   };
+  useEffect(() => {}, []);
   useEffect(() => {
+    const getLocalData = localStorage.getItem("activeBot");
+    getLocalData ? setActiveBot(getLocalData) : null;
     if (chatId) {
-      messages.length <= 0 ? getPrevChat() : 123;
+      messages.length <= 0 ? getPrevChat() : console.log("khong the lay tin");
     }
-    // const getLocal = localStorage.getItem("activeBot");
-    // getLocal ? setLocalApi(getLocal) : 123;
-  }, []);
+  }, [activeBot]);
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -138,7 +129,7 @@ export default function PlaceholderContent1({ id }: Props) {
         </div>
       )}
       {/* remove fixed */}
-      <div className="inset-x-0 bottom-10  mx-auto">
+      <div className="inset-x-0 bottom-10 mx-auto">
         <div className="w-full max-w-xl mx-auto">
           <Card className="p-2">
             <form onSubmit={handleSubmit}>

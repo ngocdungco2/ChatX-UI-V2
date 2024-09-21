@@ -64,7 +64,7 @@ export function Menu({ isOpen }: MenuProps) {
                               className="w-full justify-start h-10 mb-1"
                               asChild
                             >
-                              <Link href={href}>
+                              <Link href={href} scroll={false}>
                                 <span
                                   className={cn(isOpen === false ? "" : "mr-4")}
                                 >
@@ -129,7 +129,7 @@ export function Menu({ isOpen }: MenuProps) {
                   <TooltipTrigger asChild>
                     <Button
                       onClick={() => {
-                        router.push("/dashboard");
+                        router.push("/dashboard", { scroll: false });
                       }}
                       variant="outline"
                       className="w-full justify-center h-10 mt-5"

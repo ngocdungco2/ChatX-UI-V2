@@ -8,12 +8,16 @@ import {
   SheetHeader,
   SheetContent,
   SheetTrigger,
-  SheetTitle
+  SheetTitle,
+  SheetDescription
 } from "@/components/ui/sheet";
 
 export function SheetMenu() {
   return (
     <Sheet>
+      <SheetHeader>
+        <SheetDescription></SheetDescription>
+      </SheetHeader>
       <SheetTrigger className="lg:hidden" asChild>
         <Button className="h-8" variant="outline" size="icon">
           <MenuIcon size={20} />

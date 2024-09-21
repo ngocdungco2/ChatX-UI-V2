@@ -14,17 +14,45 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 type Props = {
   isOpen: boolean | undefined;
 };
 export function SheetBot({ isOpen }: Props) {
   const [inputName, setInputName] = useState("");
   const [inputKey, setInputKey] = useState("");
+  const [apiKeyData, setApiKeyData] = useState<{ name: string; key: string }[]>(
+    []
+  );
 
   const handleClick = () => {
-    localStorage.setItem("apiKey", inputKey);
+    const localData = localStorage.getItem("apiKey");
+    if (localData) {
+      const existData: [] = JSON.parse(localData);
+      // @ts-ignore
+      existData.push({ name: inputName, key: inputKey });
+
+      localStorage.setItem("apiKey", JSON.stringify(existData));
+
+      const newState = existData.flatMap((item) => [
+        // @ts-ignore
+        { name: item.name, key: item.key }
+      ]);
+      setApiKeyData(newState);
+    } else {
+      localStorage.setItem(
+        "apiKey",
+        JSON.stringify([{ name: inputName, key: inputKey }])
+      );
+    }
   };
+  useEffect(() => {
+    const localData = localStorage.getItem("apiKey");
+    localData
+      ? setApiKeyData(JSON.parse(localData))
+      : console.log("No api key exist");
+  }, []);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
