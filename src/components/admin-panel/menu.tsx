@@ -106,52 +106,60 @@ export function Menu({ isOpen }: MenuProps) {
             </li>
           ))}
           <li className="w-full grow flex items-end ">
-            <div className="flex flex-col w-full  justify-between">
-              <TooltipProvider disableHoverableContent>
-                <Tooltip>
-                  <SheetName isOpen={isOpen} />
-                  {isOpen === false && (
-                    <TooltipContent side="right">Username</TooltipContent>
-                  )}
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider disableHoverableContent>
-                <Tooltip>
-                  <SheetBot isOpen={isOpen} />
-                  {isOpen === false && (
-                    <TooltipContent side="right">New bot</TooltipContent>
-                  )}
-                </Tooltip>
-              </TooltipProvider>
+            <div className="flex flex-col w-full justify-between ">
+              <div className="mb-6 flex flex-col w-full justify-between">
+                <TooltipProvider disableHoverableContent>
+                  <Tooltip>
+                    <SheetName isOpen={isOpen} />
+                    {isOpen === false && (
+                      <TooltipContent side="right">Username</TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="flex flex-col w-full justify-between">
+                <TooltipProvider disableHoverableContent>
+                  <Tooltip>
+                    <SheetBot isOpen={isOpen} />
+                    {isOpen === false && (
+                      <TooltipContent side="right">New bot</TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
 
-              <TooltipProvider disableHoverableContent>
-                <Tooltip delayDuration={100}>
-                  <TooltipTrigger asChild>
-                    <Button
-                      onClick={() => {
-                        router.push("/dashboard", { scroll: false });
-                      }}
-                      variant="outline"
-                      className="w-full justify-center h-10 mt-5"
-                    >
-                      <span className={cn(isOpen === false ? "" : "mr-4")}>
-                        <LogOut size={18} />
-                      </span>
-                      <p
-                        className={cn(
-                          "whitespace-nowrap",
-                          isOpen === false ? "opacity-0 hidden" : "opacity-100"
-                        )}
+              <div className="mt-1">
+                <TooltipProvider disableHoverableContent>
+                  <Tooltip delayDuration={100}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={() => {
+                          router.push("/dashboard", { scroll: false });
+                        }}
+                        variant="outline"
+                        className="w-full justify-center h-10 mt-5"
                       >
-                        New chat
-                      </p>
-                    </Button>
-                  </TooltipTrigger>
-                  {isOpen === false && (
-                    <TooltipContent side="right">New chat</TooltipContent>
-                  )}
-                </Tooltip>
-              </TooltipProvider>
+                        <span className={cn(isOpen === false ? "" : "mr-4")}>
+                          <LogOut size={18} />
+                        </span>
+                        <p
+                          className={cn(
+                            "whitespace-nowrap",
+                            isOpen === false
+                              ? "opacity-0 hidden"
+                              : "opacity-100"
+                          )}
+                        >
+                          New chat
+                        </p>
+                      </Button>
+                    </TooltipTrigger>
+                    {isOpen === false && (
+                      <TooltipContent side="right">New chat</TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
           </li>
         </ul>

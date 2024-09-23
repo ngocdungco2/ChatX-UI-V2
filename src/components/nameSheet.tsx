@@ -18,10 +18,16 @@ import { useState } from "react";
 type Props = {
   isOpen: boolean | undefined;
 };
+
 export function SheetName({ isOpen }: Props) {
   const [input, setInput] = useState("");
   const handleClick = () => {
-    localStorage.setItem("username", input);
+    if (input !== "") {
+      localStorage.setItem("username", input);
+      window.location.reload();
+    } else {
+      console.log("Không thể để trống tên");
+    }
   };
   return (
     <Sheet>

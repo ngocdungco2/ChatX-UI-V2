@@ -111,3 +111,5 @@ export const getHistoryConversation = async (name: string, token: string) => {
 //     console.error("Error while continue to chat:", error);
 //   }
 // };
+
+export const sendMessageStreaming = () => {};

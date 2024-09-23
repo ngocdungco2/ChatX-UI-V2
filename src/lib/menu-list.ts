@@ -1,13 +1,6 @@
 import { getHistoryConversation } from "@/action/request";
-import {
-  Tag,
-  Users,
-  LayoutGrid,
-  LucideIcon,
-  HistoryIcon,
-  List,
-  PlusIcon
-} from "lucide-react";
+import { Tag, LayoutGrid, LucideIcon, HistoryIcon, List } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Submenu = {
@@ -36,7 +29,7 @@ export function getMenuList(pathname: string): Group[] {
   const [activeBot, setActiveBot] = useState("");
   const [listBot, setListBot] = useState<{ name: string; key: string }[]>([]);
 
-  const [localApi, setLocalApi] = useState("");
+  const router = useRouter();
 
   const getHistory = async () => {
     const get = await getHistoryConversation("abc-123", activeBot);
@@ -66,6 +59,9 @@ export function getMenuList(pathname: string): Group[] {
   }, []);
   useEffect(() => {
     getHistory();
+  }, [router]);
+  useEffect(() => {
+    getHistory();
   }, [activeBot]);
   return [
     {
@@ -81,8 +77,22 @@ export function getMenuList(pathname: string): Group[] {
       ]
     },
     {
-      groupLabel: "Contents",
+      groupLabel: "Explore",
       menus: [
+        {
+          href: "#",
+          label: "Bot list",
+          active: pathname.includes("/categories"),
+          icon: List,
+          submenus: [
+            ...listBot.map((item) => ({
+              href: "#",
+              label: item.name,
+              active: item.key === activeBot,
+              key: item.key
+            }))
+          ]
+        },
         {
           href: "",
           label: "History",
@@ -95,28 +105,14 @@ export function getMenuList(pathname: string): Group[] {
               active: pathname === `/dashboard/${item.id}`
             }))
           ]
-        },
-        {
-          href: "#",
-          label: "Bot list",
-          active: pathname.includes("/categories"),
-          icon: List,
-          submenus: [
-            ...listBot.map((item) => ({
-              href: "#",
-              label: item.name,
-              active: pathname === `#`,
-              key: item.key
-            }))
-          ]
-        },
-        {
-          href: "/tags",
-          label: "Tags",
-          active: pathname.includes("/tags"),
-          icon: Tag,
-          submenus: []
         }
+        // {
+        //   href: "/tags",
+        //   label: "Tags",
+        //   active: pathname.includes("/tags"),
+        //   icon: Tag,
+        //   submenus: []
+        // }
       ]
     }
     // {

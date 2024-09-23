@@ -9,8 +9,8 @@ import Link from "next/link";
 
 export default function AboutCard() {
   return (
-    <div className="max-w-xl mx-auto mt-10 mb-4">
-      <Card>
+    <div className="max-w-xl mx-auto mt-10 mb-[500px]">
+      <Card className="">
         <CardHeader>
           <CardTitle>ChatX</CardTitle>
           <CardDescription>Ask me something</CardDescription>

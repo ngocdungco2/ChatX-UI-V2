@@ -20,7 +20,7 @@ export default function AdminPanelLayout({
       <Sidebar />
       <main
         className={cn(
-          "min-h-[calc(100vh_-_30px)] bg-zinc-50 dark:bg-zinc-900 transition-[margin-left] ease-in-out duration-300",
+          "min-h-[calc(100vh_-_0px)] bg-zinc-50 dark:bg-zinc-900 transition-[margin-left] ease-in-out duration-300 bg-logoChat bg-cover",
           // @ts-ignore
           sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72"
         )}

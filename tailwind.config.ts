@@ -18,6 +18,9 @@ const config = {
       }
     },
     extend: {
+      backgroundImage: {
+        logoChat: "url('/bgChat.png')"
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

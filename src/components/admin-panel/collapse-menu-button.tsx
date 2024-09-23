@@ -28,6 +28,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { clearCacheByServerAction } from "@/action/clearCache";
+import Image from "next/image";
 
 type Submenu = {
   href: string;
@@ -57,7 +59,7 @@ export function CollapseMenuButton({
   const setActiveKey = (key: string | undefined) => {
     if (key) {
       localStorage.setItem("activeBot", key);
-      revalidatePath("/dashboard", "layout");
+      window.location.href = "/dashboard";
     } else {
       return null;
     }
@@ -111,6 +113,7 @@ export function CollapseMenuButton({
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
         {submenus.map(({ href, label, active, key }, index) => (
           // this
+
           <Button
             key={index}
             variant={active ? "secondary" : "ghost"}
@@ -120,7 +123,16 @@ export function CollapseMenuButton({
           >
             <Link href={key ? "/dashboard" : href} scroll={false}>
               <span className="mr-4 ml-2">
-                <Dot size={18} />
+                {key ? (
+                  <Image
+                    src="/boticon.png"
+                    alt="boticon"
+                    width={18}
+                    height={18}
+                  />
+                ) : (
+                  <Dot size={18} />
+                )}
               </span>
               <p
                 className={cn(
