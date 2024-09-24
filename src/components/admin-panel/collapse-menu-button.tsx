@@ -80,12 +80,10 @@ export function CollapseMenuButton({
         >
           <div className="w-full items-center flex justify-between">
             <div className="flex items-center">
-              <span className="mr-4">
-                <Icon size={18} />
-              </span>
+              <span className="mr-4">{/* <Icon size={18} /> */}</span>
               <p
                 className={cn(
-                  "max-w-[150px] truncate",
+                  "max-w-[150px] truncate font-bold",
                   isOpen
                     ? "translate-x-0 opacity-100"
                     : "-translate-x-96 opacity-0"
@@ -116,22 +114,31 @@ export function CollapseMenuButton({
 
           <Button
             key={index}
-            variant={active ? "secondary" : "ghost"}
-            className="w-full justify-start h-10 mb-1"
+            variant={active ? "active" : "ghost"}
+            className="w-full justify-start h-10 mb-2 mt-1 shadow-none"
             onClick={() => setActiveKey(key)}
             asChild
           >
+            {/* nếu không có key tức là item của lịch sử */}
             <Link href={key ? "/dashboard" : href} scroll={false}>
               <span className="mr-4 ml-2">
-                {key ? (
+                {key && active ? (
                   <Image
-                    src="/boticon.png"
+                    src="/bot.svg"
                     alt="boticon"
                     width={18}
                     height={18}
+                    className="w-auto h-auto"
+                  />
+                ) : key ? (
+                  <Image
+                    src="/boticon.png"
+                    width={18}
+                    height={18}
+                    alt="botticondark"
                   />
                 ) : (
-                  <Dot size={18} />
+                  ""
                 )}
               </span>
               <p

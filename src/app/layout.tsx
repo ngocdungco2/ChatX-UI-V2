@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <link rel="shortcut icon" href="/logo.png" type="image/x-icon" />
+      <link rel="icon" href="/logo.png" type="image/x-icon" />
       <body className={GeistSans.className}>
         {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
         {children}

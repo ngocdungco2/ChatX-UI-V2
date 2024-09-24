@@ -10,6 +10,9 @@ const config = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      roboto: ["Roboto", "sans-serif"]
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -19,7 +22,7 @@ const config = {
     },
     extend: {
       backgroundImage: {
-        logoChat: "url('/bgChat.png')"
+        logoChat: "url('/bg.png')"
       },
       colors: {
         border: "hsl(var(--border))",
@@ -87,7 +90,10 @@ const config = {
       }
     }
   },
-  plugins: [require("tailwindcss-animate")]
+  plugins: [
+    require("tailwindcss-animate"),
+    require("tailwind-extended-shadows")
+  ]
 } satisfies Config;
 
 export default config;

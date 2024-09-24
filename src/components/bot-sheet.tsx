@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 type Props = {
   isOpen: boolean | undefined;
@@ -56,9 +57,14 @@ export function SheetBot({ isOpen }: Props) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">
+        <Button variant="active" className="flex justify-center">
           <span className={cn(isOpen === false ? "" : "mr-4")}>
-            <PlusIcon size={18} />
+            <Image
+              src="/newbotai.svg"
+              alt="logo add ai"
+              width={18}
+              height={18}
+            />
           </span>
           <span
             className={cn(
@@ -66,7 +72,7 @@ export function SheetBot({ isOpen }: Props) {
               isOpen === false ? "opacity-0 hidden" : "opacity-100"
             )}
           >
-            New bot
+            New AI bot +
           </span>
         </Button>
       </SheetTrigger>
@@ -92,7 +98,7 @@ export function SheetBot({ isOpen }: Props) {
               Api key:
             </Label>
             <Input
-              className="col-span-3"
+              className="col-span-3 "
               onChange={(e) => {
                 setInputKey(e.target.value);
               }}

@@ -11,6 +11,7 @@ import {
   SheetTitle,
   SheetDescription
 } from "@/components/ui/sheet";
+import Image from "next/image";
 
 export function SheetMenu() {
   return (
@@ -31,8 +32,15 @@ export function SheetMenu() {
             asChild
           >
             <Link href="/dashboard" className="flex items-center gap-2">
-              <PanelsTopLeft className="w-6 h-6 mr-1" />
-              <SheetTitle className="font-bold text-lg">Brand</SheetTitle>
+              <SheetTitle className="font-bold text-lg">
+                <Image
+                  src="/logo.svg"
+                  alt="logo"
+                  height={30}
+                  width={100}
+                  className="mx-1"
+                />
+              </SheetTitle>
             </Link>
           </Button>
         </SheetHeader>

@@ -20,7 +20,6 @@ export const sendMessage = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // TODO: replace with dynamic token
         Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
@@ -39,7 +38,7 @@ export const sendMessage = async (
   }
 };
 
-// Previus chat
+// Previous chat
 export const getHistoryChat = async (
   userId: string,
   conversationId: string,
@@ -61,7 +60,7 @@ export const getHistoryChat = async (
     return data;
   } catch (error) {
     // console.error("Error get history chat:", error);
-    throw new Error("Cant not fetch previus chat with Bot");
+    throw new Error("Cant not fetch previous chat with Bot");
   }
 };
 
@@ -69,7 +68,7 @@ export const getHistoryChat = async (
 export const getHistoryConversation = async (name: string, token: string) => {
   try {
     const res = await fetch(
-      `https://api.chatx.vn/v1/conversations?user=${name}&limit=7`,
+      `https://api.chatx.vn/v1/conversations?user=${name}&limit=6`,
       {
         method: "GET",
         headers: {
@@ -112,4 +111,23 @@ export const getHistoryConversation = async (name: string, token: string) => {
 //   }
 // };
 
-export const sendMessageStreaming = () => {};
+export const sendFileUpload = async (
+  file: File,
+  user: string,
+  token: string
+) => {
+  try {
+    const res = await fetch("https://api.chatx.vn/v1/files/upload", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        user: user,
+        file: file
+      })
+    });
+  } catch (e) {
+    throw new Error("Cant not upload file");
+  }
+};

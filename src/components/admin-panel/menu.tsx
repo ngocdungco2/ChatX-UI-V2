@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/tooltip";
 import { SheetName } from "../nameSheet";
 import { SheetBot } from "../bot-sheet";
+import Image from "next/image";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -53,14 +54,14 @@ export function Menu({ isOpen }: MenuProps) {
                 <p className="pb-2"></p>
               )}
               {menus.map(
-                ({ href, label, icon: Icon, active, submenus }, index) =>
+                ({ href, label, icon: Icon, active, submenus, tag }, index) =>
                   submenus.length === 0 ? (
                     <div className="w-full" key={index}>
                       <TooltipProvider disableHoverableContent>
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
                             <Button
-                              variant={active ? "secondary" : "ghost"}
+                              variant={active ? "active" : "unActive"}
                               className="w-full justify-start h-10 mb-1"
                               asChild
                             >
@@ -68,11 +69,28 @@ export function Menu({ isOpen }: MenuProps) {
                                 <span
                                   className={cn(isOpen === false ? "" : "mr-4")}
                                 >
-                                  <Icon size={18} />
+                                  {/* dùng như này vì chỉ đang có 2 button sau phải sửa lại */}
+                                  {tag === "NewChat" ? (
+                                    <Image
+                                      src="/newchat.svg"
+                                      alt="icon new chat"
+                                      width={18}
+                                      height={18}
+                                    />
+                                  ) : (
+                                    tag === "Explore" && (
+                                      <Image
+                                        src="/home.svg"
+                                        alt="icon new chat"
+                                        width={18}
+                                        height={18}
+                                      />
+                                    )
+                                  )}
                                 </span>
                                 <p
                                   className={cn(
-                                    "max-w-[200px] truncate",
+                                    "max-w-[200px] truncate font-bold",
                                     isOpen === false
                                       ? "-translate-x-96 opacity-0"
                                       : "translate-x-0 opacity-100"
@@ -105,61 +123,16 @@ export function Menu({ isOpen }: MenuProps) {
               )}
             </li>
           ))}
-          <li className="w-full grow flex items-end ">
+          <li className="w-full grow flex items-end border-none">
             <div className="flex flex-col w-full justify-between ">
-              <div className="mb-6 flex flex-col w-full justify-between">
-                <TooltipProvider disableHoverableContent>
-                  <Tooltip>
-                    <SheetName isOpen={isOpen} />
-                    {isOpen === false && (
-                      <TooltipContent side="right">Username</TooltipContent>
-                    )}
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex flex-col w-full justify-between">
-                <TooltipProvider disableHoverableContent>
-                  <Tooltip>
-                    <SheetBot isOpen={isOpen} />
-                    {isOpen === false && (
-                      <TooltipContent side="right">New bot</TooltipContent>
-                    )}
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-
-              <div className="mt-1">
-                <TooltipProvider disableHoverableContent>
-                  <Tooltip delayDuration={100}>
-                    <TooltipTrigger asChild>
-                      <Button
-                        onClick={() => {
-                          router.push("/dashboard", { scroll: false });
-                        }}
-                        variant="outline"
-                        className="w-full justify-center h-10 mt-5"
-                      >
-                        <span className={cn(isOpen === false ? "" : "mr-4")}>
-                          <LogOut size={18} />
-                        </span>
-                        <p
-                          className={cn(
-                            "whitespace-nowrap",
-                            isOpen === false
-                              ? "opacity-0 hidden"
-                              : "opacity-100"
-                          )}
-                        >
-                          New chat
-                        </p>
-                      </Button>
-                    </TooltipTrigger>
-                    {isOpen === false && (
-                      <TooltipContent side="right">New chat</TooltipContent>
-                    )}
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+              <TooltipProvider disableHoverableContent>
+                <Tooltip>
+                  <SheetBot isOpen={isOpen} />
+                  {isOpen === false && (
+                    <TooltipContent side="right">New AI bot</TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </li>
         </ul>

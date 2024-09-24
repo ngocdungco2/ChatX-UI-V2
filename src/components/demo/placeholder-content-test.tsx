@@ -1,22 +1,18 @@
 "use client";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { act, Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getHistoryChat, sendMessage } from "@/action/request";
 import Loading from "@/app/(demo)/dashboard/loading";
 import AboutCard from "../about";
-import { getInitials } from "../admin-panel/user-nav";
-import Link from "next/link";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
-import { Chat } from "../chat";
-import { tree } from "next/dist/build/templates/app-page";
+
 type Props = {
   id?: string;
 };
@@ -43,8 +39,7 @@ export default function PlaceholderContent1({ id }: Props) {
   });
   const sidebar = useStore(useSidebarToggle, (state) => state);
   const [isTyping, setIsTyping] = useState<boolean>(false);
-
-  // TODO: handle error
+  const [file, setFile] = useState(null);
   const handleSubmit = async (e: React.FormEvent) => {
     setIsTyping(true);
     e.preventDefault();
@@ -58,16 +53,21 @@ export default function PlaceholderContent1({ id }: Props) {
     ]);
     setInput("");
 
-    const result = await sendMessage(input, chatId, activeBot);
-    setChatId(result.conversation_id);
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "assistant",
-        content: result.answer
-      }
-    ]);
-    setIsTyping(false);
+    try {
+      const result = await sendMessage(input, chatId, activeBot);
+      setChatId(result.conversation_id);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: result.answer
+        }
+      ]);
+      setIsTyping(false);
+    } catch (error) {
+      console.error(error);
+      throw new Error("Can not send messages");
+    }
   };
   const getPrevChat = async () => {
     // TODO: handle error
@@ -99,7 +99,7 @@ export default function PlaceholderContent1({ id }: Props) {
   }, [messages]);
   useEffect(() => {}, [chatId]);
   return (
-    <div className="group w-full overflow-auto min-h-[calc(100vh-56px-64px-20px-24px-56px-48px) ">
+    <div className="group w-full overflow-auto ">
       {messages.length <= 0 ? (
         pathname === "/dashboard" ? (
           <AboutCard />
@@ -107,34 +107,43 @@ export default function PlaceholderContent1({ id }: Props) {
           <Loading />
         )
       ) : (
-        <div className="max-w-xl mx-auto mt-10 mb-24">
+        <div className="max-w-xl mx-auto mt-10 mb-24  ">
           {messages.map((message, index) => (
-            <div key={index} className="whitespace-pre-wrap flex mb-5 ">
+            <div
+              key={index}
+              className={`flex ${
+                message.role === "user" ? "justify-end" : "justify-start"
+              } mb-4`}
+            >
               <div
-                className={`${
-                  message.role === "user" ? "bg-blue-300 ml-auto" : "bg-white"
-                } p-2 rounded-lg`}
+                className={`flex ${
+                  message.role === "user" ? "flex-row-reverse" : "flex-row"
+                } items-start max-w-[90%]`}
               >
-                {message.role === "user" ? (
-                  <div className="flex justify-center ">
-                    {message.content as string}
-
-                    <Avatar className="h-7 w-8 ml-2 ">
-                      <AvatarImage src="#" alt="Avatar" />
-                      <AvatarFallback className="">
-                        {getInitials(name)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                ) : (
-                  <div className="flex justify-center">
-                    <Avatar className="h-6 w-8 mx-2">
-                      <AvatarImage src="#" alt="Avatar" />
-                      <AvatarFallback className="">X</AvatarFallback>
-                    </Avatar>
-                    {message.content as string}
-                  </div>
-                )}
+                <div className="flex-shrink-0">
+                  <Image
+                    src={
+                      message.role === "user"
+                        ? "/avataruser.png"
+                        : "/chatxavatar.png"
+                    }
+                    alt={`${
+                      message.role === "user" ? "User" : "Assistant"
+                    } Avatar`}
+                    width={message.role === "user" ? 40 : 35}
+                    height={message.role === "user" ? 40 : 35}
+                    className="rounded-full "
+                  />
+                </div>
+                <div
+                  className={`mx-2 py-3 px-6 rounded-xl ${
+                    message.role === "user" ? "bg-white" : "bg-white"
+                  } overflow-hidden`}
+                >
+                  <p className={`font-roboto break-words text-left}`}>
+                    {message.content}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
@@ -144,34 +153,43 @@ export default function PlaceholderContent1({ id }: Props) {
       )}
       <div
         className={cn(
-          "inset-x-0 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 ",
-          sidebar?.isOpen ? "lg:ml-80 ml-0" : "lg:ml-24 ml-0"
+          "inset-x-0 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
+          sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
         )}
       >
-        <div className="w-full max-w-xl mx-auto">
-          <Card className="p-2">
+        <div className="w-full  max-w-xl mx-auto  ">
+          <Card className="p-2  border-none rounded-full">
             <form>
               <div className="flex">
+                {/* <Input type="file" className="w-[40%]" /> */}
+                <Button className="bg-transparent hover:bg-transparent rounded-full shadow-none ">
+                  <Image
+                    src={"/image.svg"}
+                    alt="upimg"
+                    height={20}
+                    width={20}
+                    className="w-auto h-auto"
+                  />
+                </Button>
                 <Input
                   type="text"
                   value={input}
                   onChange={(event) => {
                     setInput(event.target.value);
                   }}
-                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none border-transparent focus:border-transparent focus-visible:ring-none mx-auto"
-                  placeholder="Ask me anything..."
+                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto  shadow-none "
+                  placeholder="Hỏi tôi bất cứ điều gì?"
                 />
                 <Button
-                  // type="submit"
                   onClick={handleSubmit}
                   disabled={!input.trim()}
-                  variant={"outline"}
+                  variant={"ghost"}
                 >
                   <Image
-                    src="/sendIcon.png"
+                    src="/sent.svg"
                     alt="send icon"
-                    height={20}
-                    width={20}
+                    height={25}
+                    width={25}
                   />
                 </Button>
               </div>

@@ -16,6 +16,7 @@ type Menu = {
   active: boolean;
   icon: LucideIcon;
   submenus: Submenu[];
+  tag?: string;
 };
 
 type Group = {
@@ -69,20 +70,34 @@ export function getMenuList(pathname: string): Group[] {
       menus: [
         {
           href: "/dashboard",
-          label: "Home",
-          active: pathname.endsWith("/dashboard"),
+          label: "Khám phá",
+          active: pathname.endsWith("/dashboar"),
           icon: LayoutGrid,
+          tag: "Explore",
           submenus: []
         }
       ]
     },
     {
-      groupLabel: "Explore",
+      groupLabel: "",
+      menus: [
+        {
+          href: "/dashboard",
+          label: "Đoạn chat mới",
+          active: pathname.endsWith("/dashboar"),
+          icon: LayoutGrid,
+          tag: "NewChat",
+          submenus: []
+        }
+      ]
+    },
+    {
+      groupLabel: "",
       menus: [
         {
           href: "#",
-          label: "Bot list",
-          active: pathname.includes("/categories"),
+          label: "Danh sách AI",
+          active: false,
           icon: List,
           submenus: [
             ...listBot.map((item) => ({
@@ -95,9 +110,10 @@ export function getMenuList(pathname: string): Group[] {
         },
         {
           href: "",
-          label: "History",
+          label: "Lịch sử",
           active: pathname.includes("/posts"),
           icon: HistoryIcon,
+          tag: "history",
           submenus: [
             ...history.map((item) => ({
               href: `/dashboard/${item.id}`,
