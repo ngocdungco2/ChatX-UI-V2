@@ -132,8 +132,26 @@ export const sendFileUpload = async (
   }
 };
 
-// export const isValidApi = async (name: string, key: string){
-//   try{
-//     const res =  await fetch ("https://api.chatx.vn/v1//chat-messages")
-//   }
-// }
+export const isValidKey = async (key: string) => {
+  try {
+    const res = await fetch("https://api.chatx.vn/v1/chat-messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${key}`
+      },
+      body: JSON.stringify({
+        inputs: {},
+        query: "alo",
+        response_mode: "blocking",
+        conversation_id: "",
+        user: "test"
+      })
+    });
+    const data = await res.json();
+    return data.answer ? true : false;
+  } catch (e) {
+    console.error(e);
+    throw new Error("Can not valid key");
+  }
+};

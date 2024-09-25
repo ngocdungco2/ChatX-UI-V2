@@ -1,4 +1,5 @@
 "use client";
+import { isValidKey } from "@/action/request";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,7 @@ import {
   SheetTitle,
   SheetTrigger
 } from "@/components/ui/sheet";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
@@ -25,8 +27,36 @@ export function SheetBot({ isOpen }: Props) {
   const [apiKeyData, setApiKeyData] = useState<{ name: string; key: string }[]>(
     []
   );
+  const [isValid, setIsValid] = useState(false);
+  const { toast } = useToast();
 
-  const handleClick = () => {
+  const handleClick = async () => {
+    const check = await isValidKey(inputKey);
+    if (!check) {
+      setIsValid(false);
+      toast({
+        variant: "destructive",
+        description: "Key bạn vừa nhập không hợp lệ hãy kiểm tra lại"
+      });
+    } else {
+      setIsValid(true);
+      toast({
+        variant: "default",
+        description: "Key hợp lệ AI đã được thêm vào danh sách"
+      });
+      addToLocal();
+    }
+  };
+  const isDuplicate = () => {
+    const data = localStorage.getItem("apiKey");
+    if (data) {
+      const check = JSON.parse(data).map((item: any) => {
+        item.key === inputKey;
+      });
+      return check ? true : false;
+    }
+  };
+  const addToLocal = () => {
     const localData = localStorage.getItem("apiKey");
     if (localData) {
       const existData: [] = JSON.parse(localData);
@@ -47,6 +77,12 @@ export function SheetBot({ isOpen }: Props) {
       );
     }
   };
+  const refreshValue = () => {
+    setInputKey("");
+    setInputName("");
+    setIsValid(false);
+  };
+
   useEffect(() => {
     const localData = localStorage.getItem("apiKey");
     localData
@@ -57,7 +93,11 @@ export function SheetBot({ isOpen }: Props) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="active" className="flex justify-center">
+        <Button
+          variant="active"
+          className="flex justify-center"
+          onClick={refreshValue}
+        >
           <span className={cn(isOpen === false ? "" : "mr-4")}>
             <Image
               src="/newbotai.svg"
@@ -79,7 +119,9 @@ export function SheetBot({ isOpen }: Props) {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Create a new bot with API-key</SheetTitle>
-          <SheetDescription>abcxyz</SheetDescription>
+          <SheetDescription>
+            Nhập tên và api key sau đó nhấn check để kiểm tra dữ liệu
+          </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
@@ -106,8 +148,18 @@ export function SheetBot({ isOpen }: Props) {
           </div>
         </div>
         <SheetFooter>
+          {/* <Button
+            onClick={() => handleCheck()}
+            disabled={!(inputKey && inputName)}
+          >
+            Check key
+          </Button> */}
           <SheetClose asChild>
-            <Button type="submit" onClick={() => handleClick()}>
+            <Button
+              type="submit"
+              onClick={() => handleClick()}
+              disabled={!(inputName && inputKey)}
+            >
               Save changes
             </Button>
           </SheetClose>

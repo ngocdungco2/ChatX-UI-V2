@@ -28,6 +28,7 @@ export default function PlaceholderContent1({ id }: Props) {
     return localStorage.getItem("activeBot") || "";
   });
   const pathname = usePathname();
+  const fileRef = useRef<HTMLInputElement>(null);
   //scroll down when load
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
@@ -89,7 +90,10 @@ export default function PlaceholderContent1({ id }: Props) {
     await navigator.clipboard.writeText(text);
     setIsCopy({ index: index, check: true });
   };
-
+  const handleUpload = (e: any) => {
+    e.prevent.default();
+    fileRef.current?.click();
+  };
   useEffect(() => {
     // get activebot
     const getLocalData = localStorage.getItem("activeBot");
@@ -192,8 +196,11 @@ export default function PlaceholderContent1({ id }: Props) {
           <Card className="p-2  border-none rounded-full">
             <form onSubmit={handleSubmit}>
               <div className="flex">
-                {/* <Input type="file" className="w-[40%]" /> */}
-                <Button className="bg-transparent hover:bg-transparent rounded-full shadow-none ">
+                <Input type="file" className="hidden" ref={fileRef} />
+                <Button
+                  className="bg-transparent hover:bg-transparent rounded-full shadow-none "
+                  onClick={(e) => handleUpload(e)}
+                >
                   <Image
                     src={"/image.svg"}
                     alt="upimg"
