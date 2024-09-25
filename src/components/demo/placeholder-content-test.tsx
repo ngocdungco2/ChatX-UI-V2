@@ -42,6 +42,7 @@ export default function PlaceholderContent1({ id }: Props) {
   const [file, setFile] = useState(null);
   const handleSubmit = async (e: React.FormEvent) => {
     setIsTyping(true);
+    if (input === "") return;
     e.preventDefault();
     // Lấy tin nhắn người dùng
     setMessages((prev) => [
@@ -107,7 +108,7 @@ export default function PlaceholderContent1({ id }: Props) {
           <Loading />
         )
       ) : (
-        <div className="max-w-xl mx-auto mt-10 mb-24  ">
+        <div className="max-w-5xl mx-auto mt-10 mb-24  ">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -138,11 +139,13 @@ export default function PlaceholderContent1({ id }: Props) {
                 <div
                   className={`mx-2 py-3 px-6 rounded-xl ${
                     message.role === "user" ? "bg-white" : "bg-white"
-                  } overflow-hidden`}
+                  } overflow-hidden `}
                 >
-                  <p className={`font-roboto break-words text-left}`}>
-                    {message.content}
-                  </p>
+                  <pre
+                    className={`font-roboto text-left w-full whitespace-pre-wrap`}
+                  >
+                    {message.content as string}
+                  </pre>
                 </div>
               </div>
             </div>
@@ -153,13 +156,13 @@ export default function PlaceholderContent1({ id }: Props) {
       )}
       <div
         className={cn(
-          "inset-x-0 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
+          "inset-x-0 z-50 mb-[30px] bottom-0 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
           sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
         )}
       >
         <div className="w-full  max-w-xl mx-auto  ">
           <Card className="p-2  border-none rounded-full">
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="flex">
                 {/* <Input type="file" className="w-[40%]" /> */}
                 <Button className="bg-transparent hover:bg-transparent rounded-full shadow-none ">
@@ -169,6 +172,7 @@ export default function PlaceholderContent1({ id }: Props) {
                     height={20}
                     width={20}
                     className="w-auto h-auto"
+                    onClick={() => console.log("image")}
                   />
                 </Button>
                 <Input
@@ -181,15 +185,15 @@ export default function PlaceholderContent1({ id }: Props) {
                   placeholder="Hỏi tôi bất cứ điều gì?"
                 />
                 <Button
-                  onClick={handleSubmit}
+                  // onClick={handleSubmit}
                   disabled={!input.trim()}
                   variant={"ghost"}
                 >
                   <Image
                     src="/sent.svg"
                     alt="send icon"
-                    height={25}
-                    width={25}
+                    height={30}
+                    width={30}
                   />
                 </Button>
               </div>

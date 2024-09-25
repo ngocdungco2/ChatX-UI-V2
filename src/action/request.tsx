@@ -131,3 +131,9 @@ export const sendFileUpload = async (
     throw new Error("Cant not upload file");
   }
 };
+
+// export const isValidApi = async (name: string, key: string){
+//   try{
+//     const res =  await fetch ("https://api.chatx.vn/v1//chat-messages")
+//   }
+// }

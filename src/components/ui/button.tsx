@@ -21,7 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         dropDown: "",
         unActive:
-          "bg-[#f7f7f7] text-black px-4 py-2 rounded-full shadow-md hover:bg-[#f7f7f7]/80 ",
+          "bg-[#f7f7f7] text-black px-4 py-2 rounded-full shadow-none hover:bg-[#f7f7f7]/80 ",
         active: "bg-[#150327] text-white px-4 py-2 rounded-full shadow-md "
       },
       size: {

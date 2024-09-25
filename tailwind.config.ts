@@ -22,7 +22,8 @@ const config = {
     },
     extend: {
       backgroundImage: {
-        logoChat: "url('/bg.png')"
+        logoChat: "url('/bg.png')",
+        logoChat2: "url('/bg2.png')"
       },
       colors: {
         border: "hsl(var(--border))",
