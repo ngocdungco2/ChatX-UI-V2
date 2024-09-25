@@ -27,8 +27,6 @@ import {
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { clearCacheByServerAction } from "@/action/clearCache";
 import Image from "next/image";
 
 type Submenu = {
@@ -132,7 +130,7 @@ export function CollapseMenuButton({
                   />
                 ) : key ? (
                   <Image
-                    src="/boticon.png"
+                    src="/botrv.svg"
                     width={18}
                     height={18}
                     alt="botticondark"

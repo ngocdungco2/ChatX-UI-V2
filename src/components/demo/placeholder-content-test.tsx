@@ -40,6 +40,7 @@ export default function PlaceholderContent1({ id }: Props) {
   const sidebar = useStore(useSidebarToggle, (state) => state);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [file, setFile] = useState(null);
+  const [isCopy, setIsCopy] = useState<{ index: number; check: boolean }>();
   const handleSubmit = async (e: React.FormEvent) => {
     setIsTyping(true);
     if (input === "") return;
@@ -83,6 +84,10 @@ export default function PlaceholderContent1({ id }: Props) {
     } else {
       throw new Error("Can not get old conversation");
     }
+  };
+  const handleCopy = async (index: number, text: string) => {
+    await navigator.clipboard.writeText(text);
+    setIsCopy({ index: index, check: true });
   };
 
   useEffect(() => {
@@ -146,6 +151,29 @@ export default function PlaceholderContent1({ id }: Props) {
                   >
                     {message.content as string}
                   </pre>
+                  {message.role === "assistant" && (
+                    <Button
+                      className="mt-2"
+                      variant={"outline"}
+                      onClick={() => handleCopy(index, message.content)}
+                    >
+                      {isCopy?.check && isCopy.index === index ? (
+                        <Image
+                          src="/copied.svg"
+                          alt="st"
+                          width={15}
+                          height={15}
+                        />
+                      ) : (
+                        <Image
+                          src="/copyI.svg"
+                          alt="st"
+                          width={15}
+                          height={15}
+                        />
+                      )}
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
