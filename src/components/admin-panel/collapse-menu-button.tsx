@@ -134,6 +134,7 @@ export function CollapseMenuButton({
                     width={18}
                     height={18}
                     alt="botticondark"
+                    className="w-auto h-auto"
                   />
                 ) : (
                   ""

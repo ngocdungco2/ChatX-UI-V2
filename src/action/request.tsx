@@ -1,4 +1,5 @@
 "use server";
+import { url } from "inspector";
 import { ReactNode } from "react";
 
 export interface Message {
@@ -85,53 +86,6 @@ export const getHistoryConversation = async (name: string, token: string) => {
   }
 };
 
-// decrapated
-// export const continueMessage = async (
-//   question: string,
-//   conversationId: string,
-//   token: string
-// ) => {
-//   try {
-//     const res = await fetch("https://api.chatx.vn/v1/chat-messages", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify({
-//         inputs: {},
-//         query: question,
-//         response_mode: "blocking",
-//         conversation_id: conversationId,
-//         user: "abc-123",
-//       }),
-//     });
-//   } catch (error) {
-//     console.error("Error while continue to chat:", error);
-//   }
-// };
-
-export const sendFileUpload = async (
-  file: File,
-  user: string,
-  token: string
-) => {
-  try {
-    const res = await fetch("https://api.chatx.vn/v1/files/upload", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        user: user,
-        file: file
-      })
-    });
-  } catch (e) {
-    throw new Error("Cant not upload file");
-  }
-};
-
 export const isValidKey = async (key: string) => {
   try {
     const res = await fetch("https://api.chatx.vn/v1/chat-messages", {
@@ -153,5 +107,62 @@ export const isValidKey = async (key: string) => {
   } catch (e) {
     console.error(e);
     throw new Error("Can not valid key");
+  }
+};
+export const sendMessageWithPicture = async (
+  question: string,
+  chatId: string,
+  token: string,
+  file: any
+) => {
+  try {
+    const res = await fetch("https://api.chatx.vn/v1/chat-messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        inputs: {},
+        query: question,
+        response_mode: "blocking",
+        conversation_id: chatId,
+        user: "abc-123",
+        files: [
+          {
+            type: "image",
+            transfer_method: "local_file",
+            upload_file_id: file
+          }
+        ]
+      })
+    });
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    throw new Error("Cant not upload file");
+  }
+};
+export const uploadImageToServer = async (
+  user: string,
+  key: string,
+  file: File
+) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("user", user);
+    const res = await fetch("https://api.chatx.vn/v1/files/upload", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${key}`
+      },
+      body: formData
+    });
+    const data = await res.json();
+    console.log(data);
+    return data.id;
+  } catch (e) {
+    throw new Error("Can not upload file");
   }
 };

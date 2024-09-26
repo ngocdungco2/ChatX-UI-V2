@@ -5,23 +5,27 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getHistoryChat, sendMessage } from "@/action/request";
+import {
+  getHistoryChat,
+  sendMessage,
+  sendMessageWithPicture,
+  uploadImageToServer
+} from "@/action/request";
 import Loading from "@/app/(demo)/dashboard/loading";
 import AboutCard from "../about";
 import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
-
 type Props = {
   id?: string;
 };
 
 export default function PlaceholderContent1({ id }: Props) {
   // const [messages, setMessages] = useState<CoreMessage[]>([]);
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>(
-    []
-  );
+  const [messages, setMessages] = useState<
+    { role: string; content: string; fileUrl?: any }[]
+  >([]);
   const [chatId, setChatId] = useState(id || "");
   const [activeBot, setActiveBot] = useState(() => {
     // Khởi tạo từ localStorage
@@ -29,48 +33,61 @@ export default function PlaceholderContent1({ id }: Props) {
   });
   const pathname = usePathname();
   const fileRef = useRef<HTMLInputElement>(null);
+  const submutButtonRef = useRef(null);
   //scroll down when load
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   const [input, setInput] = useState<string>("");
-  const [name, setName] = useState(() => {
-    return localStorage.getItem("username") || "US";
-  });
+
   const sidebar = useStore(useSidebarToggle, (state) => state);
   const [isTyping, setIsTyping] = useState<boolean>(false);
-  const [file, setFile] = useState(null);
   const [isCopy, setIsCopy] = useState<{ index: number; check: boolean }>();
   const handleSubmit = async (e: React.FormEvent) => {
     setIsTyping(true);
     if (input === "") return;
     e.preventDefault();
+    const image = isUpload && (await uploadImageToServer());
     // Lấy tin nhắn người dùng
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "user",
-        content: input
-      }
-    ]);
-    setInput("");
-
-    try {
-      const result = await sendMessage(input, chatId, activeBot);
-      setChatId(result.conversation_id);
+    if (file === null) {
       setMessages((prev) => [
         ...prev,
         {
-          role: "assistant",
-          content: result.answer
+          role: "user",
+          content: input
         }
       ]);
-      setIsTyping(false);
-    } catch (error) {
-      console.error(error);
-      throw new Error("Can not send messages");
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "user",
+          content: input,
+          fileUrl: filePreview
+        }
+      ]);
     }
+
+    setInput("");
+    const result =
+      file !== null
+        ? await sendMessageWithPicture(input, chatId, activeBot, image.id)
+        : await sendMessage(input, chatId, activeBot);
+
+    setChatId(result.conversation_id);
+    setFile(null);
+    setFilePreview("");
+    setIsUpload(false);
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        content: result.answer
+      }
+    ]);
+    setIsTyping(false);
   };
   const getPrevChat = async () => {
     // TODO: handle error
@@ -90,10 +107,46 @@ export default function PlaceholderContent1({ id }: Props) {
     await navigator.clipboard.writeText(text);
     setIsCopy({ index: index, check: true });
   };
+  // luu file
+  const [file, setFile] = useState<File | null>(null);
+  // luu hinh file de preview
+  const [filePreview, setFilePreview] = useState("");
+  const [isUpload, setIsUpload] = useState(false);
+  const uploadImageToServer = async () => {
+    try {
+      const formData = new FormData();
+      if (file) {
+        formData.append("file", file);
+        formData.append("user", "abc-123");
+      }
+      const res = await fetch("https://api.chatx.vn/v1/files/upload", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${activeBot}`
+        },
+        body: formData
+      });
+      const data = res.json();
+      return data;
+    } catch (e) {
+      throw new Error("Can not upload file");
+    }
+  };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+      setIsUpload(true);
+      const reader = new FileReader();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onloadend = () => {
+        setFilePreview(reader.result as string);
+      };
+    }
+  };
   const handleUpload = (e: any) => {
-    e.prevent.default();
     fileRef.current?.click();
   };
+
   useEffect(() => {
     // get activebot
     const getLocalData = localStorage.getItem("activeBot");
@@ -107,9 +160,9 @@ export default function PlaceholderContent1({ id }: Props) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  useEffect(() => {}, [chatId]);
+  useEffect(() => {}, [filePreview]);
   return (
-    <div className="group w-full overflow-auto ">
+    <div className="group w-full overflow-auto">
       {messages.length <= 0 ? (
         pathname === "/dashboard" ? (
           <AboutCard />
@@ -154,6 +207,16 @@ export default function PlaceholderContent1({ id }: Props) {
                     className={`font-roboto text-left w-full whitespace-pre-wrap`}
                   >
                     {message.content as string}
+                    {message.fileUrl && message.role === "user" ? (
+                      <img
+                        src={message.fileUrl}
+                        alt=""
+                        height={150}
+                        width={150}
+                      />
+                    ) : (
+                      ""
+                    )}
                   </pre>
                   {message.role === "assistant" && (
                     <Button
@@ -167,6 +230,7 @@ export default function PlaceholderContent1({ id }: Props) {
                           alt="st"
                           width={15}
                           height={15}
+                          className="w-[15px] h-[15px]"
                         />
                       ) : (
                         <Image
@@ -174,6 +238,7 @@ export default function PlaceholderContent1({ id }: Props) {
                           alt="st"
                           width={15}
                           height={15}
+                          className="w-[15px] h-[15px]"
                         />
                       )}
                     </Button>
@@ -196,20 +261,21 @@ export default function PlaceholderContent1({ id }: Props) {
           <Card className="p-2  border-none rounded-full">
             <form onSubmit={handleSubmit}>
               <div className="flex">
-                <Input type="file" className="hidden" ref={fileRef} />
-                <Button
-                  className="bg-transparent hover:bg-transparent rounded-full shadow-none "
+                <Input
+                  type="file"
+                  className="hidden"
+                  ref={fileRef}
+                  onChange={handleFileChange}
+                />
+                <Image
+                  src={"/image.svg"}
+                  alt="upimg"
+                  height={20}
+                  width={20}
+                  className="w-auto h-auto ml-4 hover:cursor-pointer"
                   onClick={(e) => handleUpload(e)}
-                >
-                  <Image
-                    src={"/image.svg"}
-                    alt="upimg"
-                    height={20}
-                    width={20}
-                    className="w-auto h-auto"
-                    onClick={() => console.log("image")}
-                  />
-                </Button>
+                />
+
                 <Input
                   type="text"
                   value={input}
@@ -220,9 +286,11 @@ export default function PlaceholderContent1({ id }: Props) {
                   placeholder="Hỏi tôi bất cứ điều gì?"
                 />
                 <Button
+                  // type="submit"
                   // onClick={handleSubmit}
                   disabled={!input.trim()}
                   variant={"ghost"}
+                  ref={submutButtonRef}
                 >
                   <Image
                     src="/sent.svg"
