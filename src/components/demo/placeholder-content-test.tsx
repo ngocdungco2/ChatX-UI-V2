@@ -94,8 +94,14 @@ export default function PlaceholderContent1({ id }: Props) {
     const history = await getHistoryChat("abc-123", chatId, activeBot);
     if (chatId !== "" && activeBot !== "") {
       const formattedMessages = history.data.flatMap((msg: any) => [
-        { role: "user", content: msg.query }, // Tin nhắn của người dùng
-        { role: "assistant", content: msg.answer } // Tin nhắn của API
+        msg.message_files.length > 0
+          ? {
+              role: "user",
+              content: msg.query,
+              fileUrl: msg.message_files[0].url
+            }
+          : { role: "user", content: msg.query, fileUrl: "" }, // Tin nhắn của người dùng
+        { role: "assistant", content: msg.answer, fileUrl: "" } // Tin nhắn của API
       ]);
       // Cập nhật state messages
       setMessages(formattedMessages);
