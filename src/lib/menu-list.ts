@@ -111,7 +111,7 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: "",
           label: "Lịch sử",
-          active: pathname.includes("/posts"),
+          active: false,
           icon: HistoryIcon,
           tag: "history",
           submenus: [

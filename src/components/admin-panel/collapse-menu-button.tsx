@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { revalidatePath } from "next/cache";
 
 type Submenu = {
   href: string;
@@ -134,7 +135,7 @@ export function CollapseMenuButton({
                     width={18}
                     height={18}
                     alt="botticondark"
-                    className="w-auto h-auto"
+                    className="w-[18px] h-[18px]"
                   />
                 ) : (
                   ""

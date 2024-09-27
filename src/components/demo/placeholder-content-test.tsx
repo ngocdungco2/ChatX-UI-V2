@@ -17,6 +17,7 @@ import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
+
 type Props = {
   id?: string;
 };
@@ -152,7 +153,13 @@ export default function PlaceholderContent1({ id }: Props) {
   const handleUpload = (e: any) => {
     fileRef.current?.click();
   };
-
+  const createMarkup = (c: any) => {
+    return { __html: c };
+  };
+  const checkIsHtml = (content: string) => {
+    const isHtml = content.trim().startsWith("<");
+    return isHtml;
+  };
   useEffect(() => {
     // get activebot
     const getLocalData = localStorage.getItem("activeBot");
@@ -209,21 +216,28 @@ export default function PlaceholderContent1({ id }: Props) {
                     message.role === "user" ? "bg-white" : "bg-white"
                   } overflow-hidden `}
                 >
-                  <pre
-                    className={`font-roboto text-left w-full whitespace-pre-wrap`}
-                  >
-                    {message.content as string}
-                    {message.fileUrl && message.role === "user" ? (
-                      <img
-                        src={message.fileUrl}
-                        alt=""
-                        height={150}
-                        width={150}
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </pre>
+                  {!checkIsHtml(message.content) ? (
+                    <pre
+                      className={`font-roboto text-left w-full whitespace-pre-wrap`}
+                    >
+                      {message.content as string}
+                      {message.fileUrl && message.role === "user" ? (
+                        <img
+                          src={message.fileUrl}
+                          alt=""
+                          height={150}
+                          width={150}
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </pre>
+                  ) : (
+                    <div
+                      dangerouslySetInnerHTML={createMarkup(message.content)}
+                    />
+                  )}
+
                   {message.role === "assistant" && (
                     <Button
                       className="mt-2"
