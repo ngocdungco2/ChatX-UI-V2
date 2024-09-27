@@ -1,3 +1,4 @@
+import { initialStart } from "@/action/initial";
 import { getHistoryConversation } from "@/action/request";
 import { Tag, LayoutGrid, LucideIcon, HistoryIcon, List } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -55,10 +56,8 @@ export function getMenuList(pathname: string): Group[] {
   };
 
   useEffect(() => {
-    // getHistory();
     const data = localStorage.getItem("activeBot");
-    data ? setActiveBot(JSON.parse(data)) : null;
-    // getHistory();
+    data ? setActiveBot(JSON.parse(data)) : console.log("Khong co activebot");
     getListBot();
   }, []);
   useEffect(() => {

@@ -20,6 +20,7 @@ import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
 import parse from "html-react-parser";
+import { initialStart } from "@/action/initial";
 type Props = {
   id?: string;
 };
@@ -176,7 +177,10 @@ export default function PlaceholderContent1({ id }: Props) {
     const isHtml = data.trim().startsWith("<");
     return isHtml;
   };
+
   useEffect(() => {
+    // TODO: remove this initial or hash apikey
+    initialStart();
     // get activebot
     const getLocalData = localStorage.getItem("activeBot");
     getLocalData ? setActiveBot(JSON.parse(getLocalData)) : null;
@@ -185,7 +189,7 @@ export default function PlaceholderContent1({ id }: Props) {
     if (chatId) {
       messages.length <= 0 ? getPrevChat() : console.log("khong the lay tin");
     }
-  }, [activeBot.key]);
+  }, [activeBot]);
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
