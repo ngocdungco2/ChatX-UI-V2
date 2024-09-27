@@ -35,7 +35,7 @@ type Submenu = {
   label: string;
   active: boolean;
   key?: string;
-  tag: string;
+  tag?: string;
 };
 
 interface CollapseMenuButtonProps {
@@ -119,7 +119,11 @@ export function CollapseMenuButton({
             key={index}
             variant={active ? "active" : "ghost"}
             className="w-full justify-start h-10 mb-2 mt-1 shadow-none"
-            onClick={() => setActiveKey(key, tag)}
+            onClick={() => {
+              if (tag) {
+                setActiveKey(key, tag);
+              }
+            }}
             asChild
           >
             {/* nếu không có key tức là item của lịch sử */}

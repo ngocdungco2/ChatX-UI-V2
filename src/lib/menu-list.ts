@@ -9,6 +9,7 @@ type Submenu = {
   label: string;
   active: boolean;
   key?: string;
+  tag?: string;
 };
 
 type Menu = {
@@ -17,7 +18,7 @@ type Menu = {
   active: boolean;
   icon: LucideIcon;
   submenus: Submenu[];
-  tag?: string;
+  tag?: any;
 };
 
 type Group = {
