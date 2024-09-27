@@ -86,7 +86,7 @@ export const getHistoryConversation = async (name: string, token: string) => {
   }
 };
 
-export const isValidKey = async (key: string) => {
+export const isValidKeyChatBot = async (key: string) => {
   try {
     const res = await fetch("https://api.chatx.vn/v1/chat-messages", {
       method: "POST",
@@ -102,6 +102,33 @@ export const isValidKey = async (key: string) => {
         user: "test"
       })
     });
+    const data = await res.json();
+    return data.answer ? true : false;
+  } catch (e) {
+    console.error(e);
+    throw new Error("Can not valid key");
+  }
+};
+export const isValidKeyAgent = async (key: string) => {
+  try {
+    const res = await fetch(
+      "https://tools.chatx.vn/api/tools/utilities/chat/message",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${key}`
+        },
+        body: JSON.stringify({
+          inputs: {},
+          query: "alo",
+          response_mode: "streaming",
+          api_key: "app-tFDgSUm47hDScSPq6psnBz2q",
+          conversation_id: "",
+          user: "abc-123"
+        })
+      }
+    );
     const data = await res.json();
     return data.answer ? true : false;
   } catch (e) {
@@ -164,5 +191,76 @@ export const uploadImageToServer = async (
     return data.id;
   } catch (e) {
     throw new Error("Can not upload file");
+  }
+};
+
+export const sendMessageToAgent = async (
+  question: string,
+  chatId: string,
+  token: string
+) => {
+  try {
+    const res = await fetch(
+      "https://tools.chatx.vn/api/tools/utilities/chat/message",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          inputs: {},
+          query: question,
+          response_mode: "streaming",
+          api_key: token,
+          conversation_id: chatId,
+          user: "abc-123"
+        })
+      }
+    );
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    console.error(e);
+    throw new Error("Caught error when trying connect to agent ");
+  }
+};
+
+export const sendMessageWithPictureToAgent = async (
+  question: string,
+  chatId: string,
+  token: string,
+  file: any
+) => {
+  try {
+    const res = await fetch(
+      "https://tools.chatx.vn/api/tools/utilities/chat/message",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          inputs: {},
+          query: question,
+          response_mode: "streaming",
+          api_key: token,
+          conversation_id: chatId,
+          user: "abc-123",
+          files: [
+            {
+              type: "image",
+              transfer_method: "local_file",
+              upload_file_id: file
+            }
+          ]
+        })
+      }
+    );
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    throw new Error("Cant not upload file");
   }
 };

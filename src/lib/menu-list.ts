@@ -27,13 +27,16 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
   const [history, setHistory] = useState<{ id: string; name: string }[]>([]);
 
-  const [activeBot, setActiveBot] = useState("");
-  const [listBot, setListBot] = useState<{ name: string; key: string }[]>([]);
+  const [activeBot, setActiveBot] = useState<{ key: string; type: string }>();
+  const [listBot, setListBot] = useState<
+    { name: string; key: string; type: string }[]
+  >([]);
 
   const router = useRouter();
 
   const getHistory = async () => {
-    const get = await getHistoryConversation("abc-123", activeBot);
+    if (!activeBot) return null;
+    const get = await getHistoryConversation("abc-123", activeBot.key);
     if (get.data === undefined) {
       return null;
     } else {
@@ -54,7 +57,7 @@ export function getMenuList(pathname: string): Group[] {
   useEffect(() => {
     // getHistory();
     const data = localStorage.getItem("activeBot");
-    data ? setActiveBot(data) : null;
+    data ? setActiveBot(JSON.parse(data)) : null;
     // getHistory();
     getListBot();
   }, []);
@@ -103,8 +106,9 @@ export function getMenuList(pathname: string): Group[] {
             ...listBot.map((item) => ({
               href: "#",
               label: item.name,
-              active: item.key === activeBot,
-              key: item.key
+              active: item.key === activeBot?.key,
+              key: item.key,
+              tag: item.type
             }))
           ]
         },

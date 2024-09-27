@@ -1,5 +1,5 @@
 "use client";
-import { isValidKey } from "@/action/request";
+import { isValidKeyAgent, isValidKeyChatBot } from "@/action/request";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +18,15 @@ import { cn } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue
+} from "./ui/select";
 type Props = {
   isOpen: boolean | undefined;
 };
@@ -28,10 +37,14 @@ export function SheetBot({ isOpen }: Props) {
     []
   );
   const [isValid, setIsValid] = useState(false);
+  const [botType, setBotType] = useState("");
   const { toast } = useToast();
 
   const handleClick = async () => {
-    const check = await isValidKey(inputKey);
+    const check =
+      botType === "Chatbot"
+        ? await isValidKeyChatBot(inputKey)
+        : await isValidKeyAgent(inputKey);
     if (!check) {
       setIsValid(false);
       toast({
@@ -61,19 +74,19 @@ export function SheetBot({ isOpen }: Props) {
     if (localData) {
       const existData: [] = JSON.parse(localData);
       // @ts-ignore
-      existData.push({ name: inputName, key: inputKey });
+      existData.push({ name: inputName, key: inputKey, type: botType });
 
       localStorage.setItem("apiKey", JSON.stringify(existData));
 
       const newState = existData.flatMap((item) => [
         // @ts-ignore
-        { name: item.name, key: item.key }
+        { name: item.name, key: item.key, type: item.type }
       ]);
       setApiKeyData(newState);
     } else {
       localStorage.setItem(
         "apiKey",
-        JSON.stringify([{ name: inputName, key: inputKey }])
+        JSON.stringify([{ name: inputName, key: inputKey, type: botType }])
       );
     }
   };
@@ -89,7 +102,6 @@ export function SheetBot({ isOpen }: Props) {
       ? setApiKeyData(JSON.parse(localData))
       : console.log("No api key exist");
   }, []);
-
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -146,6 +158,23 @@ export function SheetBot({ isOpen }: Props) {
               }}
             />
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Bot type:
+            </Label>
+            <Select onValueChange={setBotType}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Select bot type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Select bot type</SelectLabel>
+                  <SelectItem value="Chatbot">Chatbot</SelectItem>
+                  <SelectItem value="Agent">Agent</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <SheetFooter>
           {/* <Button
@@ -158,7 +187,7 @@ export function SheetBot({ isOpen }: Props) {
             <Button
               type="submit"
               onClick={() => handleClick()}
-              disabled={!(inputName && inputKey)}
+              disabled={!(inputName && inputKey && botType)}
             >
               Save changes
             </Button>

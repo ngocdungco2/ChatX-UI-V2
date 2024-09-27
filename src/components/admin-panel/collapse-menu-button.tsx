@@ -35,6 +35,7 @@ type Submenu = {
   label: string;
   active: boolean;
   key?: string;
+  tag: string;
 };
 
 interface CollapseMenuButtonProps {
@@ -55,9 +56,12 @@ export function CollapseMenuButton({
   const isSubmenuActive = submenus.some((submenu) => submenu.active);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
   const router = useRouter();
-  const setActiveKey = (key: string | undefined) => {
+  const setActiveKey = (key: string | undefined, tag: string) => {
     if (key) {
-      localStorage.setItem("activeBot", key);
+      localStorage.setItem(
+        "activeBot",
+        JSON.stringify({ key: key, type: tag })
+      );
       window.location.href = "/dashboard";
     } else {
       return null;
@@ -108,14 +112,14 @@ export function CollapseMenuButton({
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-        {submenus.map(({ href, label, active, key }, index) => (
+        {submenus.map(({ href, label, active, key, tag }, index) => (
           // this
 
           <Button
             key={index}
             variant={active ? "active" : "ghost"}
             className="w-full justify-start h-10 mb-2 mt-1 shadow-none"
-            onClick={() => setActiveKey(key)}
+            onClick={() => setActiveKey(key, tag)}
             asChild
           >
             {/* nếu không có key tức là item của lịch sử */}

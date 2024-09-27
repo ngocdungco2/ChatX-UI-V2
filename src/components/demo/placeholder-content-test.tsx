@@ -8,7 +8,9 @@ import { usePathname } from "next/navigation";
 import {
   getHistoryChat,
   sendMessage,
+  sendMessageToAgent,
   sendMessageWithPicture,
+  sendMessageWithPictureToAgent,
   uploadImageToServer
 } from "@/action/request";
 import Loading from "@/app/(demo)/dashboard/loading";
@@ -30,8 +32,12 @@ export default function PlaceholderContent1({ id }: Props) {
   const [chatId, setChatId] = useState(id || "");
   const [activeBot, setActiveBot] = useState(() => {
     // Khởi tạo từ localStorage
-    return localStorage.getItem("activeBot") || "";
+    const data = localStorage.getItem("activeBot");
+    if (data) {
+      return JSON.parse(data);
+    }
   });
+
   const pathname = usePathname();
   const fileRef = useRef<HTMLInputElement>(null);
   const submutButtonRef = useRef(null);
@@ -72,10 +78,20 @@ export default function PlaceholderContent1({ id }: Props) {
     }
 
     setInput("");
+
     const result =
       file !== null
-        ? await sendMessageWithPicture(input, chatId, activeBot, image.id)
-        : await sendMessage(input, chatId, activeBot);
+        ? activeBot.type === "Chatbot"
+          ? await sendMessageWithPicture(input, chatId, activeBot.key, image.id)
+          : await sendMessageWithPictureToAgent(
+              input,
+              chatId,
+              activeBot.key,
+              image.id
+            )
+        : activeBot.type === "Chatbot"
+        ? await sendMessage(input, chatId, activeBot.key)
+        : await sendMessageToAgent(input, chatId, activeBot.key);
 
     setChatId(result.conversation_id);
     setFile(null);
@@ -93,8 +109,8 @@ export default function PlaceholderContent1({ id }: Props) {
   };
   const getPrevChat = async () => {
     // TODO: handle error
-    const history = await getHistoryChat("abc-123", chatId, activeBot);
-    if (chatId !== "" && activeBot !== "") {
+    if (chatId !== "" && activeBot.key !== "") {
+      const history = await getHistoryChat("abc-123", chatId, activeBot.key);
       const formattedMessages = history.data.flatMap((msg: any) => [
         msg.message_files.length > 0
           ? {
@@ -130,7 +146,7 @@ export default function PlaceholderContent1({ id }: Props) {
       const res = await fetch("https://api.chatx.vn/v1/files/upload", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${activeBot}`
+          Authorization: `Bearer ${activeBot.key}`
         },
         body: formData
       });
@@ -163,13 +179,13 @@ export default function PlaceholderContent1({ id }: Props) {
   useEffect(() => {
     // get activebot
     const getLocalData = localStorage.getItem("activeBot");
-    getLocalData ? setActiveBot(getLocalData) : null;
+    getLocalData ? setActiveBot(JSON.parse(getLocalData)) : null;
   }, []);
   useEffect(() => {
     if (chatId) {
       messages.length <= 0 ? getPrevChat() : console.log("khong the lay tin");
     }
-  }, [activeBot]);
+  }, [activeBot.key]);
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -247,7 +263,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   {message.role === "assistant" && (
                     <Button
                       className="mt-2"
-                      variant={"outline"}
+                      variant={"noOutline"}
                       onClick={() => handleCopy(index, message.content)}
                     >
                       {isCopy?.check && isCopy.index === index ? (
@@ -286,14 +302,14 @@ export default function PlaceholderContent1({ id }: Props) {
         <div className="w-full  max-w-xl mx-auto ">
           <div
             className={cn(
-              " w-20 h-20  ml-4  mb-2 border-none shadow-none",
+              " w-20 h-20  ml-4  mb-2 border-none shadow-none ",
               !isUpload && "hidden"
             )}
           >
             <img
               src={filePreview}
               alt="123"
-              className="w-20 h-20 "
+              className="w-20 h-20 hover:cursor-pointer"
               onClick={() => {
                 setFile(null);
                 setIsUpload(false);
@@ -314,9 +330,9 @@ export default function PlaceholderContent1({ id }: Props) {
                 <Image
                   src={"/image.svg"}
                   alt="upimg"
-                  height={20}
-                  width={20}
-                  className="w-auto h-auto ml-4 hover:cursor-pointer"
+                  height={15}
+                  width={15}
+                  className="w-6 h-6 ml-4 hover:cursor-pointer mt-1 mr-2"
                   onClick={(e) => handleUpload(e)}
                   onDrop={(e) => handleUpload(e)}
                 />
