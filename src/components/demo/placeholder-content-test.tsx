@@ -17,7 +17,7 @@ import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
-
+import parse from "html-react-parser";
 type Props = {
   id?: string;
 };
@@ -35,6 +35,7 @@ export default function PlaceholderContent1({ id }: Props) {
   const pathname = usePathname();
   const fileRef = useRef<HTMLInputElement>(null);
   const submutButtonRef = useRef(null);
+  const containerRef = useRef(null);
   //scroll down when load
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
@@ -153,11 +154,10 @@ export default function PlaceholderContent1({ id }: Props) {
   const handleUpload = (e: any) => {
     fileRef.current?.click();
   };
-  const createMarkup = (c: any) => {
-    return { __html: c };
-  };
+
   const checkIsHtml = (content: string) => {
-    const isHtml = content.trim().startsWith("<");
+    const data = content.replace(/^```html\n/, "").replace(/\n```$/, "");
+    const isHtml = data.trim().startsWith("<");
     return isHtml;
   };
   useEffect(() => {
@@ -173,7 +173,7 @@ export default function PlaceholderContent1({ id }: Props) {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  useEffect(() => {}, [filePreview]);
+  useEffect(() => {}, []);
   return (
     <div className="group w-full overflow-auto">
       {messages.length <= 0 ? (
@@ -221,21 +221,27 @@ export default function PlaceholderContent1({ id }: Props) {
                       className={`font-roboto text-left w-full whitespace-pre-wrap`}
                     >
                       {message.content as string}
-                      {message.fileUrl && message.role === "user" ? (
+                      {message.fileUrl && message.role === "user" && (
                         <img
                           src={message.fileUrl}
                           alt=""
                           height={150}
                           width={150}
                         />
-                      ) : (
-                        ""
                       )}
                     </pre>
                   ) : (
-                    <div
-                      dangerouslySetInnerHTML={createMarkup(message.content)}
-                    />
+                    // <div
+                    //   ref={containerRef}
+                    //   dangerouslySetInnerHTML={createMarkup(message.content)}
+                    // />
+                    <div className="w-full h-full flex flex-grow justify-center items-center overflow-hidden">
+                      <iframe
+                        srcDoc={message.content}
+                        className="w-[550px] h-[450px] border-none"
+                        sandbox="allow-scripts"
+                      />
+                    </div>
                   )}
 
                   {message.role === "assistant" && (
@@ -277,7 +283,24 @@ export default function PlaceholderContent1({ id }: Props) {
           sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
         )}
       >
-        <div className="w-full  max-w-xl mx-auto  ">
+        <div className="w-full  max-w-xl mx-auto ">
+          <div
+            className={cn(
+              " w-20 h-20  ml-4  mb-2 border-none shadow-none",
+              !isUpload && "hidden"
+            )}
+          >
+            <img
+              src={filePreview}
+              alt="123"
+              className="w-20 h-20 "
+              onClick={() => {
+                setFile(null);
+                setIsUpload(false);
+                setFilePreview("");
+              }}
+            />
+          </div>
           <Card className="p-2  border-none rounded-full">
             <form onSubmit={handleSubmit}>
               <div className="flex">
@@ -285,6 +308,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   type="file"
                   className="hidden"
                   ref={fileRef}
+                  accept="image/png, image/jpeg, image/jpg, image/webp, image/gif"
                   onChange={handleFileChange}
                 />
                 <Image
@@ -294,6 +318,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   width={20}
                   className="w-auto h-auto ml-4 hover:cursor-pointer"
                   onClick={(e) => handleUpload(e)}
+                  onDrop={(e) => handleUpload(e)}
                 />
 
                 <Input
