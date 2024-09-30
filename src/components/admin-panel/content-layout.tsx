@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/admin-panel/navbar";
 
 interface ContentLayoutProps {
-  title: string;
+  title: any;
   children: React.ReactNode;
 }
 

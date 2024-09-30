@@ -58,6 +58,8 @@ export default function PlaceholderContent1({ id }: Props) {
     if (input === "") return;
     e.preventDefault();
     const image = isUpload && (await uploadImageToServer());
+    setIsUpload(false);
+
     // Lấy tin nhắn người dùng
     if (file === null) {
       setMessages((prev) => [
@@ -77,7 +79,6 @@ export default function PlaceholderContent1({ id }: Props) {
         }
       ]);
     }
-
     setInput("");
 
     const result =
@@ -97,7 +98,6 @@ export default function PlaceholderContent1({ id }: Props) {
     setChatId(result.conversation_id);
     setFile(null);
     setFilePreview("");
-    setIsUpload(false);
 
     setMessages((prev) => [
       ...prev,
@@ -203,7 +203,7 @@ export default function PlaceholderContent1({ id }: Props) {
           <Loading />
         )
       ) : (
-        <div className="max-w-5xl mx-auto mt-10 mb-24  ">
+        <div className="max-w-5xl mx-auto mt-10 mb-24 ">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -216,7 +216,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   message.role === "user" ? "flex-row-reverse" : "flex-row"
                 } items-start max-w-[90%]`}
               >
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 mt-2">
                   <Image
                     src={
                       message.role === "user"
@@ -304,25 +304,25 @@ export default function PlaceholderContent1({ id }: Props) {
         )}
       >
         <div className="w-full  max-w-xl mx-auto ">
-          <div
-            className={cn(
-              " w-20 h-20  ml-4  mb-2 border-none shadow-none ",
-              !isUpload && "hidden"
-            )}
-          >
-            <img
-              src={filePreview}
-              alt="123"
-              className="w-20 h-20 hover:cursor-pointer"
-              onClick={() => {
-                setFile(null);
-                setIsUpload(false);
-                setFilePreview("");
-              }}
-            />
-          </div>
-          <Card className="p-2  border-none rounded-full">
+          <Card className="p-2  border-none rounded-2xl transition-[height] delay-100 ease-linear">
             <form onSubmit={handleSubmit}>
+              <div
+                className={cn(
+                  " w-20 h-20  ml-4  mb-2 border-none shadow-none ",
+                  !isUpload && "hidden"
+                )}
+              >
+                <img
+                  src={filePreview}
+                  alt="123"
+                  className="w-20 h-20 hover:cursor-pointer"
+                  onClick={() => {
+                    setFile(null);
+                    setIsUpload(false);
+                    setFilePreview("");
+                  }}
+                />
+              </div>
               <div className="flex">
                 <Input
                   type="file"

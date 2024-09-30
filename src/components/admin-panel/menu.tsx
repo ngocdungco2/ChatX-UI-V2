@@ -61,8 +61,8 @@ export function Menu({ isOpen }: MenuProps) {
                         <Tooltip delayDuration={100}>
                           <TooltipTrigger asChild>
                             <Button
-                              variant={active ? "active" : "unActive"}
-                              className="w-full justify-start h-10 mb-1"
+                              variant={active ? "active" : "sideBtn"}
+                              className="w-full justify-start h-10 "
                               asChild
                             >
                               <Link href={href} scroll={false}>
@@ -123,6 +123,8 @@ export function Menu({ isOpen }: MenuProps) {
               )}
             </li>
           ))}
+          {/* <SheetBot isOpen={isOpen} /> */}
+
           <li className="w-full grow flex items-end border-none">
             <div className="flex flex-col w-full justify-between ">
               <TooltipProvider disableHoverableContent>

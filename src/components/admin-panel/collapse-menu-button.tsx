@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { ChevronDown, Dot, LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -26,9 +26,8 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { revalidatePath } from "next/cache";
+import { SheetBot } from "../bot-sheet";
 
 type Submenu = {
   href: string;
@@ -55,7 +54,6 @@ export function CollapseMenuButton({
 }: CollapseMenuButtonProps) {
   const isSubmenuActive = submenus.some((submenu) => submenu.active);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
-  const router = useRouter();
   const setActiveKey = (key: string | undefined, tag: string) => {
     if (key) {
       localStorage.setItem(
@@ -67,6 +65,17 @@ export function CollapseMenuButton({
       return null;
     }
   };
+  // const [listBot, setListBot] = useState<
+  //   { name: string; key: string; type: string }[]
+  // >([]);
+  // const refreshListBot = (key: string) => {
+  //   const newList = removeBotFromList(listBot, key);
+  //   localStorage.setItem("apiKey", JSON.stringify(newList));
+  // };
+  // useEffect(() => {
+  //   const data = localStorage.getItem("apiKey");
+  //   data && setListBot(JSON.parse(data));
+  // }, [listBot]);
   return isOpen ? (
     <Collapsible
       open={isCollapsed}
@@ -114,11 +123,13 @@ export function CollapseMenuButton({
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
         {submenus.map(({ href, label, active, key, tag }, index) => (
           // this
-
           <Button
             key={index}
-            variant={active ? "active" : "ghost"}
-            className="w-full justify-start h-10 mb-2 mt-1 shadow-none"
+            variant={active ? "sideBtn" : "ghost"}
+            className={cn(
+              "justify-start h-10 mb-2 mt-1 shadow-none w-full"
+              // active ? "w-[80%]" : "w-full"
+            )}
             onClick={() => {
               if (tag) {
                 setActiveKey(key, tag);
@@ -129,7 +140,7 @@ export function CollapseMenuButton({
             {/* nếu không có key tức là item của lịch sử */}
             <Link href={key ? "/dashboard" : href} scroll={false}>
               <span className="mr-4 ml-2">
-                {key && active ? (
+                {key && (
                   <Image
                     src="/bot.svg"
                     alt="boticon"
@@ -137,16 +148,6 @@ export function CollapseMenuButton({
                     height={18}
                     className="w-auto h-auto"
                   />
-                ) : key ? (
-                  <Image
-                    src="/botrv.svg"
-                    width={18}
-                    height={18}
-                    alt="botticondark"
-                    className="w-[18px] h-[18px]"
-                  />
-                ) : (
-                  ""
                 )}
               </span>
               <p

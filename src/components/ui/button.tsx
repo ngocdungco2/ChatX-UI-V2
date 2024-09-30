@@ -17,13 +17,12 @@ const buttonVariants = cva(
           "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "rounded-full hover:bg-accent hover:text-accent-foreground ",
+        ghost: "rounded-md text-white ",
         link: "text-primary underline-offset-4 hover:underline",
         dropDown: "",
-        unActive:
-          "bg-[#f7f7f7] text-black px-4 py-2 rounded-full shadow-none hover:bg-[#f7f7f7]/80 ",
+        sideBtn: "bg-[#413254] text-white px-4 py-2 rounded-md shadow-none",
         active: "bg-[#150327] text-white px-4 py-2 rounded-full shadow-md ",
-        noOutline: "border-none   bg-background shadow-none "
+        noOutline: "border-none bg-background shadow-none "
       },
       size: {
         default: "h-9 px-4 py-2",

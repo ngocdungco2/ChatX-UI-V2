@@ -106,11 +106,11 @@ export function SheetBot({ isOpen }: Props) {
     <Sheet>
       <SheetTrigger asChild>
         <Button
-          variant="active"
-          className="flex justify-center"
+          variant="sideBtn"
+          className="flex justify-between w-full"
           onClick={refreshValue}
         >
-          <span className={cn(isOpen === false ? "" : "mr-4")}>
+          <span className={cn(isOpen === false && "")}>
             <Image
               src="/newbotai.svg"
               alt="logo add ai"
@@ -124,8 +124,9 @@ export function SheetBot({ isOpen }: Props) {
               isOpen === false ? "opacity-0 hidden" : "opacity-100"
             )}
           >
-            New AI bot +
+            New AI bot
           </span>
+          <span>+</span>
         </Button>
       </SheetTrigger>
       <SheetContent>
