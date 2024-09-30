@@ -1,5 +1,4 @@
 "use server";
-import { url } from "inspector";
 import { ReactNode } from "react";
 
 export interface Message {
@@ -38,7 +37,6 @@ export const sendMessage = async (
     throw new Error("Cant not send message");
   }
 };
-
 // Previous chat
 export const getHistoryChat = async (
   userId: string,
@@ -262,5 +260,59 @@ export const sendMessageWithPictureToAgent = async (
     return data;
   } catch (e) {
     throw new Error("Cant not upload file");
+  }
+};
+export const sendMessage1 = async (
+  question: string,
+  chatId: string,
+  token: string
+): Promise<string> => {
+  try {
+    const res = await fetch("https://api.chatx.vn/v1/chat-messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        inputs: {},
+        query: question,
+        response_mode: "streaming",
+        conversation_id: chatId,
+        user: "abc-123"
+      })
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    if (!res.body) {
+      throw new Error("Response body is null");
+    }
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let fullMessage = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value);
+      try {
+        const data = JSON.parse(chunk);
+        if (data.answer) {
+          fullMessage += data.answer;
+        }
+      } catch (error) {
+        console.error("Error parsing chunk:", error);
+      }
+    }
+    // console.log(fullMessage);
+    return fullMessage; // Return the complete message
+  } catch (error) {
+    console.error("Error sending message:", error);
+    throw new Error("Cannot send message");
   }
 };

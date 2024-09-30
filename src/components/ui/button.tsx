@@ -21,7 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         dropDown: "",
         sideBtn: "bg-[#413254] text-white px-4 py-2 rounded-md shadow-none",
-        active: "bg-[#150327] text-white px-4 py-2 rounded-full shadow-md ",
+        active: "bg-[#1e0c31] text-white px-4 py-2 rounded-md shadow-md ",
         noOutline: "border-none bg-background shadow-none "
       },
       size: {

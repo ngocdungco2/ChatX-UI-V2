@@ -138,21 +138,31 @@ export function CollapseMenuButton({
             asChild
           >
             {/* nếu không có key tức là item của lịch sử */}
-            <Link href={key ? "/dashboard" : href} scroll={false}>
-              <span className="mr-4 ml-2">
+            <Link
+              href={key ? "/dashboard" : href}
+              scroll={false}
+              className="flex justify-between"
+            >
+              <span
+                className={cn(
+                  "mr-4 ml-2",
+                  key &&
+                    "flex justify-center items-center w-[35px] h-[30px] rounded-md bg-[#615370]"
+                )}
+              >
                 {key && (
                   <Image
                     src="/bot.svg"
                     alt="boticon"
                     width={18}
                     height={18}
-                    className="w-auto h-auto"
+                    className="w-[25px] h-[25px] "
                   />
                 )}
               </span>
               <p
                 className={cn(
-                  "max-w-[170px] truncate",
+                  "max-w-[170px] truncate text-left",
                   isOpen
                     ? "translate-x-0 opacity-100"
                     : "-translate-x-96 opacity-0"
@@ -160,6 +170,17 @@ export function CollapseMenuButton({
               >
                 {label}
               </p>
+              <span className="ml-2 flex justify-center items-center">
+                {key && (
+                  <Image
+                    src={"/nextwhite.svg"}
+                    alt="iconnext"
+                    width={18}
+                    height={18}
+                    className="w-auto h-auto mr-1"
+                  />
+                )}
+              </span>
             </Link>
           </Button>
         ))}

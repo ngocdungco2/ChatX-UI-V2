@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <link rel="icon" href="/logo.png" type="image/x-icon" />
-      <body className="">
+      <body className="bg-[#1e0c31] shadow-none border-none ">
         {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
         {children}
         {/* </ThemeProvider> */}

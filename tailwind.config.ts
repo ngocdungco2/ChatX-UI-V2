@@ -93,7 +93,21 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"),
-    require("tailwind-extended-shadows")
+    require("tailwind-extended-shadows"),
+    // @ts-ignore
+    function ({ addUtilities }) {
+      const newUtitlities = {
+        ".no-scrollbar::-webkit-scrollbar": {
+          display: "none"
+        },
+
+        ".no-scrollbar ": {
+          " -ms-overflow-style": "none",
+          "scrollbar-width": "none"
+        }
+      };
+      addUtilities(newUtitlities);
+    }
   ]
 } satisfies Config;
 

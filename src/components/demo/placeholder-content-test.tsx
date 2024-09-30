@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   getHistoryChat,
   sendMessage,
@@ -53,13 +53,14 @@ export default function PlaceholderContent1({ id }: Props) {
   const sidebar = useStore(useSidebarToggle, (state) => state);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isCopy, setIsCopy] = useState<{ index: number; check: boolean }>();
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     setIsTyping(true);
     if (input === "") return;
     e.preventDefault();
     const image = isUpload && (await uploadImageToServer());
     setIsUpload(false);
-
     // Lấy tin nhắn người dùng
     if (file === null) {
       setMessages((prev) => [
@@ -173,8 +174,7 @@ export default function PlaceholderContent1({ id }: Props) {
   };
 
   const checkIsHtml = (content: string) => {
-    const data = content.replace(/^```html\n/, "").replace(/\n```$/, "");
-    const isHtml = data.trim().startsWith("<");
+    const isHtml = content.trim().startsWith("<");
     return isHtml;
   };
 
@@ -192,8 +192,12 @@ export default function PlaceholderContent1({ id }: Props) {
   }, [activeBot]);
   useEffect(() => {
     scrollToBottom();
+    // console.log(messages);
   }, [messages]);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // router.push(`/dashboard/${chatId}`, { scroll: false });
+  }, [chatId]);
+
   return (
     <div className="group w-full overflow-auto">
       {messages.length <= 0 ? (
@@ -216,7 +220,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   message.role === "user" ? "flex-row-reverse" : "flex-row"
                 } items-start max-w-[90%]`}
               >
-                <div className="flex-shrink-0 mt-2">
+                <div className="flex-shrink-0 mt-1">
                   <Image
                     src={
                       message.role === "user"
@@ -251,15 +255,11 @@ export default function PlaceholderContent1({ id }: Props) {
                       )}
                     </pre>
                   ) : (
-                    // <div
-                    //   ref={containerRef}
-                    //   dangerouslySetInnerHTML={createMarkup(message.content)}
-                    // />
                     <div className="w-full h-full flex flex-grow justify-center items-center overflow-hidden">
                       <iframe
                         srcDoc={message.content}
                         className="w-[550px] h-[450px] border-none"
-                        sandbox="allow-scripts"
+                        sandbox="allow-scripts "
                       />
                     </div>
                   )}
@@ -299,7 +299,7 @@ export default function PlaceholderContent1({ id }: Props) {
       )}
       <div
         className={cn(
-          "inset-x-0 z-50 mb-[30px] bottom-0 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
+          "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
           sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
         )}
       >

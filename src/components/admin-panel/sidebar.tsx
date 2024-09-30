@@ -54,9 +54,10 @@ export function Sidebar() {
               <Image
                 src="/logwhite.svg"
                 alt="logo"
-                height={60}
-                width={150}
-                className="mt-4 w-[170px] h-auto"
+                height={40}
+                width={140}
+                className="mt-4 w-auto h-auto"
+                priority={true}
               />
             </h1>
           </Link>

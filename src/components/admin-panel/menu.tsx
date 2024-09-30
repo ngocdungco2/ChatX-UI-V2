@@ -62,7 +62,7 @@ export function Menu({ isOpen }: MenuProps) {
                           <TooltipTrigger asChild>
                             <Button
                               variant={active ? "active" : "sideBtn"}
-                              className="w-full justify-start h-10 "
+                              className="w-full flex justify-start h-10 "
                               asChild
                             >
                               <Link href={href} scroll={false}>

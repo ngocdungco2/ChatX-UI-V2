@@ -16,27 +16,30 @@ export default function AdminPanelLayout({
   if (!sidebar) return null;
 
   return (
-    <>
+    <div className="z-10 relative">
       <Sidebar />
-      <main
-        className={cn(
-          "h-[calc(100vh_-_theme(spacing.20))] transition-[margin-left] ease-in-out duration-300 overflow-auto bg-cover bg-logoChat  rounded-t-3xl mr-2  ",
-          // @ts-ignore
-          sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72 "
-        )}
-      >
-        {children}
-      </main>
+      <div className="">
+        <main
+          // border-[#1e0c31] border-[10px] border-b-0
+          className={cn(
+            "h-[calc(97vh_-_theme(spacing.20))]   transition-[margin-left] ease-in-out duration-300 overflow-auto  bg-gradient-to-br from-pink-100 via-slate-100 to-blue-100  lg:rounded-t-3xl lg:mt-3.5 lg:mr-3.5 overflow-y-scroll no-scrollbar",
+            // @ts-ignore
+            sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-[280px] "
+          )}
+        >
+          {children}
+        </main>
+      </div>
 
       <footer
         className={cn(
-          "transition-[margin-left] ease-in-out duration-300 mr-2 ",
+          "transition-[margin-left] ease-in-out duration-300 lg:mr-3.5 ",
           // @ts-ignore
-          sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-72"
+          sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-[280px]"
         )}
       >
         <Footer />
       </footer>
-    </>
+    </div>
   );
 }
