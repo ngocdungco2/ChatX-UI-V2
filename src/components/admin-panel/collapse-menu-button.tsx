@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { SheetBot } from "../bot-sheet";
+import { ContextMenuSidebar } from "../context-sidebar";
 
 type Submenu = {
   href: string;
@@ -123,66 +124,68 @@ export function CollapseMenuButton({
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
         {submenus.map(({ href, label, active, key, tag }, index) => (
           // this
-          <Button
-            key={index}
-            variant={active ? "sideBtn" : "ghost"}
-            className={cn(
-              "justify-start h-10 mb-2 mt-1 shadow-none w-full"
-              // active ? "w-[80%]" : "w-full"
-            )}
-            onClick={() => {
-              if (tag) {
-                setActiveKey(key, tag);
-              }
-            }}
-            asChild
-          >
-            {/* nếu không có key tức là item của lịch sử */}
-            <Link
-              href={key ? "/dashboard" : href}
-              scroll={false}
-              className="flex justify-between"
+          <ContextMenuSidebar apiKey={key} chatId={href} key={index}>
+            <Button
+              key={index}
+              variant={active ? "sideBtn" : "ghost"}
+              className={cn(
+                "justify-start h-10 mb-2 mt-1 shadow-none w-full"
+                // active ? "w-[80%]" : "w-full"
+              )}
+              onClick={() => {
+                if (tag) {
+                  setActiveKey(key, tag);
+                }
+              }}
+              asChild
             >
-              <span
-                className={cn(
-                  "mr-4 ml-2",
-                  key &&
-                    "flex justify-center items-center w-[35px] h-[30px] rounded-md bg-[#615370]"
-                )}
+              {/* nếu không có key tức là item của lịch sử */}
+              <Link
+                href={key ? "/dashboard" : href}
+                scroll={false}
+                className="flex justify-start"
               >
-                {key && (
-                  <Image
-                    src="/bot.svg"
-                    alt="boticon"
-                    width={18}
-                    height={18}
-                    className="w-[25px] h-[25px] "
-                  />
-                )}
-              </span>
-              <p
-                className={cn(
-                  "max-w-[170px] truncate text-left",
-                  isOpen
-                    ? "translate-x-0 opacity-100"
-                    : "-translate-x-96 opacity-0"
-                )}
-              >
-                {label}
-              </p>
-              <span className="ml-2 flex justify-center items-center">
-                {key && (
-                  <Image
-                    src={"/nextwhite.svg"}
-                    alt="iconnext"
-                    width={18}
-                    height={18}
-                    className="w-auto h-auto mr-1"
-                  />
-                )}
-              </span>
-            </Link>
-          </Button>
+                <span
+                  className={cn(
+                    "mr-4 ml-2",
+                    key &&
+                      "flex justify-center items-center w-[35px] h-[30px] rounded-md bg-[#615370]"
+                  )}
+                >
+                  {key && (
+                    <Image
+                      src="/bot.svg"
+                      alt="boticon"
+                      width={18}
+                      height={18}
+                      className="w-[25px] h-[25px] "
+                    />
+                  )}
+                </span>
+                <p
+                  className={cn(
+                    "max-w-[170px] truncate text-left",
+                    isOpen
+                      ? "translate-x-0 opacity-100"
+                      : "-translate-x-96 opacity-0"
+                  )}
+                >
+                  {label}
+                </p>
+                {/* <span className="ml-2 flex justify-center items-center">
+                  {key && (
+                    <Image
+                      src={"/nextwhite.svg"}
+                      alt="iconnext"
+                      width={18}
+                      height={18}
+                      className="w-auto h-auto mr-1"
+                    />
+                  )}
+                </span> */}
+              </Link>
+            </Button>
+          </ContextMenuSidebar>
         ))}
       </CollapsibleContent>
     </Collapsible>

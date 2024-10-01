@@ -10,8 +10,7 @@ import {
   sendMessage,
   sendMessageToAgent,
   sendMessageWithPicture,
-  sendMessageWithPictureToAgent,
-  uploadImageToServer
+  sendMessageWithPictureToAgent
 } from "@/action/request";
 import Loading from "@/app/(demo)/dashboard/loading";
 import AboutCard from "../about";
@@ -19,8 +18,8 @@ import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
-import parse from "html-react-parser";
 import { initialStart } from "@/action/initial";
+import { ContextMenuSidebar } from "../context-sidebar";
 type Props = {
   id?: string;
 };
@@ -258,7 +257,7 @@ export default function PlaceholderContent1({ id }: Props) {
                     <div className="w-full h-full flex flex-grow justify-center items-center overflow-hidden">
                       <iframe
                         srcDoc={message.content}
-                        className="w-[550px] h-[450px] border-none"
+                        className="w-[550px] h-[450px] border-none flex justify-center items-centers"
                         sandbox="allow-scripts "
                       />
                     </div>

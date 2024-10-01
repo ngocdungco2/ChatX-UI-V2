@@ -9,7 +9,7 @@ export function GoToStudio() {
   return (
     <Button
       variant={"active"}
-      className="flex items-center justify-around text-white rounded-full py-2 px-4 w-[190px] hover:bg-[#150327]  "
+      className="flex items-center justify-around text-white rounded-full py-2 px-4 w-[190px] hover:bg-[#1d0c32]  "
       onClick={() =>
         router.push("https://app.chatx.vn/apps", { scroll: false })
       }

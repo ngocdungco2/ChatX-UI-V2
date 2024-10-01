@@ -1,20 +1,17 @@
 "use server";
 import { revalidatePath } from "next/cache";
 
-export const removeBotFromList = (
-  listBot: { name: string; key: string; type: string }[],
-  key: string
-) => {
-  if (!listBot) throw new Error("Error while trying to remove bot");
+export const handleRemove = (apiKey: string | undefined, listBot: []) => {
+  if (apiKey) {
+    if (!listBot) return;
 
-  const newList = listBot.filter(
-    (item: { name: string; key: string; type: string }) => {
-      return item.key !== key;
-    }
-  );
-
-  revalidatePath("/dashboard", "layout");
-  revalidatePath("/dashboard/[id]", "layout");
-
-  return newList;
+    const data = listBot.filter((item: any) => {
+      return item.key !== apiKey;
+    });
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/[id]");
+    return data;
+  } else {
+    console.log("this is chat");
+  }
 };
