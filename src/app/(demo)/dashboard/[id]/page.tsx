@@ -3,6 +3,7 @@ import { getHistoryConversation } from "@/action/request";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import PlaceholderContent1 from "@/components/demo/placeholder-content-test";
 import { useCallback, useEffect, useState } from "react";
+
 export default function DashboardPage({ params }: { params: { id: string } }) {
   const [history, setHistory] = useState<{ id: string; name: string }>();
   const [activeBot, setActiveBot] = useState<{ key: string; type: string }>();

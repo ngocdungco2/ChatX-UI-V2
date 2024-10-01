@@ -365,7 +365,6 @@ export const sendMessageToAgentV2 = async (
     }
 
     const answer = result.trim();
-    console.log("Final answer:", answer);
     return { answer, conversation_id };
   } catch (e) {
     console.error("Error in sendMessageToAgentV2:", e);
