@@ -58,6 +58,7 @@ export function SheetBot({ isOpen }: Props) {
         description: "Key hợp lệ AI đã được thêm vào danh sách"
       });
       addToLocal();
+      window.location.reload();
     }
   };
   const isDuplicate = () => {

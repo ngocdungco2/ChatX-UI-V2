@@ -7,8 +7,10 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   getHistoryChat,
+  sendImageToAgentV2,
   sendMessage,
   sendMessageToAgent,
+  sendMessageToAgentV2,
   sendMessageWithPicture,
   sendMessageWithPictureToAgent
 } from "@/action/request";
@@ -20,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
 import { initialStart } from "@/action/initial";
 import { ContextMenuSidebar } from "../context-sidebar";
+import { Textarea } from "../ui/textarea";
 type Props = {
   id?: string;
 };
@@ -41,7 +44,6 @@ export default function PlaceholderContent1({ id }: Props) {
   const pathname = usePathname();
   const fileRef = useRef<HTMLInputElement>(null);
   const submutButtonRef = useRef(null);
-  const containerRef = useRef(null);
   //scroll down when load
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
@@ -52,6 +54,11 @@ export default function PlaceholderContent1({ id }: Props) {
   const sidebar = useStore(useSidebarToggle, (state) => state);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isCopy, setIsCopy] = useState<{ index: number; check: boolean }>();
+  // luu file
+  const [file, setFile] = useState<File | null>(null);
+  // luu hinh file de preview
+  const [filePreview, setFilePreview] = useState("");
+  const [isUpload, setIsUpload] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,16 +92,10 @@ export default function PlaceholderContent1({ id }: Props) {
       file !== null
         ? activeBot.type === "Chatbot"
           ? await sendMessageWithPicture(input, chatId, activeBot.key, image.id)
-          : await sendMessageWithPictureToAgent(
-              input,
-              chatId,
-              activeBot.key,
-              image.id
-            )
+          : await sendImageToAgentV2(input, chatId, activeBot.key, image.id)
         : activeBot.type === "Chatbot"
         ? await sendMessage(input, chatId, activeBot.key)
-        : await sendMessageToAgent(input, chatId, activeBot.key);
-
+        : await sendMessageToAgentV2(input, chatId, activeBot.key);
     setChatId(result.conversation_id);
     setFile(null);
     setFilePreview("");
@@ -132,11 +133,6 @@ export default function PlaceholderContent1({ id }: Props) {
     await navigator.clipboard.writeText(text);
     setIsCopy({ index: index, check: true });
   };
-  // luu file
-  const [file, setFile] = useState<File | null>(null);
-  // luu hinh file de preview
-  const [filePreview, setFilePreview] = useState("");
-  const [isUpload, setIsUpload] = useState(false);
   const uploadImageToServer = async () => {
     try {
       const formData = new FormData();
@@ -173,7 +169,7 @@ export default function PlaceholderContent1({ id }: Props) {
   };
 
   const checkIsHtml = (content: string) => {
-    const isHtml = content.trim().startsWith("<");
+    const isHtml = content.includes("<div>");
     return isHtml;
   };
 
@@ -254,11 +250,11 @@ export default function PlaceholderContent1({ id }: Props) {
                       )}
                     </pre>
                   ) : (
-                    <div className="w-full h-full flex flex-grow justify-center items-center overflow-hidden">
+                    <div className="w-full h-full flex flex-grow justify-center items-center ">
                       <iframe
                         srcDoc={message.content}
-                        className="w-[550px] h-[450px] border-none flex justify-center items-centers"
-                        sandbox="allow-scripts "
+                        className="w-[600px] h-[450px] border-none flex justify-center items-centers overflow-y-scroll no-scrollbar"
+                        sandbox="allow-scripts"
                       />
                     </div>
                   )}
@@ -298,8 +294,9 @@ export default function PlaceholderContent1({ id }: Props) {
       )}
       <div
         className={cn(
-          "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
-          sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
+          // "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
+          // sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
+          "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 ml-0"
         )}
       >
         <div className="w-full  max-w-xl mx-auto ">
@@ -335,7 +332,12 @@ export default function PlaceholderContent1({ id }: Props) {
                   alt="upimg"
                   height={15}
                   width={15}
-                  className="w-6 h-6 ml-4 hover:cursor-pointer mt-1 mr-2"
+                  className={cn(
+                    "w-6 h-6 ml-4 mt-1 mr-2",
+                    isTyping
+                      ? "hover:cursor-not-allowed"
+                      : "hover:cursor-pointer"
+                  )}
                   onClick={(e) => handleUpload(e)}
                   onDrop={(e) => handleUpload(e)}
                 />
@@ -346,8 +348,10 @@ export default function PlaceholderContent1({ id }: Props) {
                   onChange={(event) => {
                     setInput(event.target.value);
                   }}
-                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto  shadow-none "
+                  className="w-[95%]  mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto  shadow-none"
                   placeholder="Hỏi tôi bất cứ điều gì?"
+                  disabled={isTyping}
+                  autoFocus={true}
                 />
                 <Button
                   // type="submit"

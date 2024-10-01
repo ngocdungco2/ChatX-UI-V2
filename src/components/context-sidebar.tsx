@@ -32,11 +32,13 @@ export const ContextMenuSidebar = ({
       return JSON.parse(data);
     }
   });
+
   // chatbot have key || conversation have chatId
   // rename bot
   // rename conversation
   // remove botx
   // remove conversation
+
   const { toast } = useToast();
   const handleRemove = async () => {
     if (apiKey) {
@@ -58,26 +60,19 @@ export const ContextMenuSidebar = ({
       console.log(action);
     }
   };
-  const handleRename = () => {
-    if (apiKey) {
-      console.log("this is chat bot with api key", apiKey);
-    } else {
-      const cId = chatId?.replace("/dashboard/", "");
-      console.log("this is chat with chatId", cId);
-    }
-  };
 
   useEffect(() => {
     localStorage.setItem("apiKey", JSON.stringify(listBot));
   }, [listBot]);
-
   return (
-    <ContextMenu>
-      <ContextMenuTrigger>{children}</ContextMenuTrigger>
-      <ContextMenuContent>
-        <ContextMenuItem onClick={handleRename}>Rename</ContextMenuItem>
-        <ContextMenuItem onClick={handleRemove}>Remove</ContextMenuItem>
-      </ContextMenuContent>
-    </ContextMenu>
+    <>
+      <ContextMenu>
+        <ContextMenuTrigger>{children}</ContextMenuTrigger>
+        <ContextMenuContent>
+          {/* <ContextMenuItem onSelect={handleRename}>Rename</ContextMenuItem> */}
+          <ContextMenuItem onSelect={handleRemove}>Remove</ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+    </>
   );
 };
