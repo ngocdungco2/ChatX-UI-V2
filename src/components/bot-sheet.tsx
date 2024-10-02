@@ -29,9 +29,12 @@ import {
 } from "./ui/select";
 type Props = {
   isOpen: boolean | undefined;
+  refreshList: any;
+  botActive: any;
 };
 // TODO: hash key
-export function SheetBot({ isOpen }: Props) {
+
+export function SheetBot({ isOpen, refreshList, botActive }: Props) {
   const [inputName, setInputName] = useState("");
   const [inputKey, setInputKey] = useState("");
   const [apiKeyData, setApiKeyData] = useState<{ name: string; key: string }[]>(
@@ -60,7 +63,8 @@ export function SheetBot({ isOpen }: Props) {
           description: "Key hợp lệ AI đã được thêm vào danh sách"
         });
         addToLocal();
-        window.location.reload();
+        refreshList(botActive.key, botActive.type);
+        // window.location.reload();
       } else {
         setIsValid(false);
         toast({
@@ -117,8 +121,8 @@ export function SheetBot({ isOpen }: Props) {
     <Sheet>
       <SheetTrigger asChild>
         <Button
-          variant="sideBtn"
-          className="flex justify-between w-[100%]"
+          variant="active"
+          className="flex justify-start w-[100%] mb-2"
           onClick={refreshValue}
         >
           <span className={cn(isOpen === false && "")}>
@@ -127,18 +131,18 @@ export function SheetBot({ isOpen }: Props) {
               alt="logo add ai"
               width={18}
               height={18}
-              className="w-[25px] h-[25px] ml-2"
+              className="w-[27px] h-[27px] ml-3"
             />
           </span>
           <span
             className={cn(
-              "whitespace-nowrap",
+              "whitespace-nowrap ml-4",
               isOpen === false ? "opacity-0 hidden" : "opacity-100"
             )}
           >
             New AI bot
           </span>
-          <span>
+          {/* <span>
             <Image
               src="/new.svg"
               alt="logo add ai"
@@ -146,7 +150,7 @@ export function SheetBot({ isOpen }: Props) {
               height={18}
               className="ml-2 w-[25px] h-[25px] "
             />
-          </span>
+          </span> */}
         </Button>
       </SheetTrigger>
       <SheetContent>

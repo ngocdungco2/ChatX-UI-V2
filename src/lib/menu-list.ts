@@ -11,6 +11,7 @@ type Submenu = {
   key?: string;
   tag?: string;
   setActiveKey?: any;
+  botActive?: any;
 };
 
 type Menu = {
@@ -26,9 +27,7 @@ type Group = {
   groupLabel: string;
   menus: Menu[];
 };
-export const refreshListBot = () => {
-  setIsRefresh(!isRefresh);
-};
+
 export function getMenuList(pathname: string): Group[] {
   const [history, setHistory] = useState<{ id: string; name: string }[]>([]);
 
@@ -59,13 +58,6 @@ export function getMenuList(pathname: string): Group[] {
     }
   };
 
-  const updateActiveBot = (key: string, type: string) => {
-    const newActiveBot = { key, type };
-    setActiveBot(newActiveBot);
-    localStorage.setItem("activeBot", JSON.stringify(newActiveBot));
-    getListBot();
-  };
-
   const setActiveKey = (key: string | undefined, tag: string) => {
     if (key) {
       localStorage.setItem(
@@ -78,6 +70,7 @@ export function getMenuList(pathname: string): Group[] {
       return null;
     }
   };
+
   useEffect(() => {
     const data = localStorage.getItem("activeBot");
     data ? setActiveBot(JSON.parse(data)) : console.log("Khong co activebot");
@@ -137,7 +130,8 @@ export function getMenuList(pathname: string): Group[] {
               active: item.key === activeBot?.key,
               key: item.key,
               tag: item.type,
-              setActiveKey: setActiveKey
+              setActiveKey: setActiveKey,
+              botActive: activeBot
             }))
           ]
         },

@@ -136,7 +136,7 @@ export function Menu({ isOpen }: MenuProps) {
           ))}
           {/* <SheetBot isOpen={isOpen} /> */}
 
-          <li className="w-full grow flex items-end border-none">
+          {/* <li className="w-full grow flex items-end border-none">
             <div className="flex flex-col w-full justify-between ">
               <TooltipProvider disableHoverableContent>
                 <Tooltip>
@@ -147,7 +147,7 @@ export function Menu({ isOpen }: MenuProps) {
                 </Tooltip>
               </TooltipProvider>
             </div>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </ScrollArea>

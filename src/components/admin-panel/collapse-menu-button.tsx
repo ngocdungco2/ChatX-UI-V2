@@ -37,6 +37,7 @@ type Submenu = {
   key?: string;
   tag?: string;
   setActiveKey?: any;
+  botActive?: Boolean;
 };
 
 interface CollapseMenuButtonProps {
@@ -104,60 +105,78 @@ CollapseMenuButtonProps) {
       </CollapsibleTrigger>
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
         {submenus.map(
-          ({ href, label, active, key, tag, setActiveKey }, index) => (
+          (
+            { href, label, active, key, tag, setActiveKey, botActive },
+            index
+          ) => (
             // this
-            <ContextMenuSidebar apiKey={key} chatId={href} key={index}>
-              <Button
+            <>
+              {index === 0 && key && (
+                <SheetBot
+                  isOpen={isOpen}
+                  refreshList={setActiveKey}
+                  botActive={botActive}
+                />
+              )}
+
+              <ContextMenuSidebar
+                apiKey={key}
+                chatId={href}
                 key={index}
-                variant={active ? "sideBtn" : "ghost"}
-                className={cn(
-                  "justify-start h-10 mb-2 mt-1 shadow-none w-full"
-                  // active ? "w-[80%]" : "w-full"
-                )}
-                onClick={() => {
-                  if (tag) {
-                    // @ts-ignore
-                    setActiveKey(key, tag);
-                    // console.log("click");
-                    // updateActiveBot(key, tag);
-                  }
-                }}
-                asChild
+                refreshList={setActiveKey}
+                botActive={botActive}
               >
-                {/* nếu không có key tức là item của lịch sử */}
-                <Link
-                  href={key ? "/dashboard" : href}
-                  scroll={false}
-                  className="flex justify-start"
+                <Button
+                  key={index}
+                  variant={active ? "sideBtn" : "ghost"}
+                  className={cn(
+                    "justify-start h-10 mb-2 mt-1 shadow-none w-full"
+                    // active ? "w-[80%]" : "w-full"
+                  )}
+                  onClick={() => {
+                    if (tag) {
+                      // @ts-ignore
+                      setActiveKey(key, tag);
+                      // console.log("click");
+                      // updateActiveBot(key, tag);
+                    }
+                  }}
+                  asChild
                 >
-                  <span
-                    className={cn(
-                      "mr-4 ml-2",
-                      key &&
-                        "flex justify-center items-center w-[35px] h-[30px] rounded-md bg-[#615370]"
-                    )}
+                  {/* nếu không có key tức là item của lịch sử */}
+                  <Link
+                    href={key ? "/dashboard" : href}
+                    scroll={false}
+                    className="flex justify-start"
                   >
-                    {key && (
-                      <Image
-                        src="/bot.svg"
-                        alt="boticon"
-                        width={18}
-                        height={18}
-                        className="w-[25px] h-[25px] "
-                      />
-                    )}
-                  </span>
-                  <p
-                    className={cn(
-                      "max-w-[170px] truncate text-left",
-                      isOpen
-                        ? "translate-x-0 opacity-100"
-                        : "-translate-x-96 opacity-0"
-                    )}
-                  >
-                    {label}
-                  </p>
-                  {/* <span className="ml-2 flex justify-center items-center">
+                    <span
+                      className={cn(
+                        "mr-4 ml-2",
+                        key &&
+                          "flex justify-center items-center w-[35px] h-[30px] rounded-md bg-[#615370]"
+                      )}
+                    >
+                      {key && (
+                        <Image
+                          src="/bot.svg"
+                          alt="boticon"
+                          width={18}
+                          height={18}
+                          className="w-[25px] h-[25px] "
+                        />
+                      )}
+                    </span>
+                    <p
+                      className={cn(
+                        "max-w-[170px] truncate text-left",
+                        isOpen
+                          ? "translate-x-0 opacity-100"
+                          : "-translate-x-96 opacity-0"
+                      )}
+                    >
+                      {label}
+                    </p>
+                    {/* <span className="ml-2 flex justify-center items-center">
                   {key && (
                     <Image
                       src={"/nextwhite.svg"}
@@ -168,9 +187,10 @@ CollapseMenuButtonProps) {
                     />
                   )}
                 </span> */}
-                </Link>
-              </Button>
-            </ContextMenuSidebar>
+                  </Link>
+                </Button>
+              </ContextMenuSidebar>
+            </>
           )
         )}
       </CollapsibleContent>

@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
 import { initialStart } from "@/action/initial";
 import { useToast } from "@/hooks/use-toast";
+import MarkDownContent from "react-markdown";
 type Props = {
   id?: string;
 };
@@ -244,10 +245,25 @@ export default function PlaceholderContent1({ id }: Props) {
                   } overflow-hidden `}
                 >
                   {!checkIsHtml(message.content) ? (
-                    <pre
-                      className={`font-roboto text-left w-full whitespace-pre-wrap`}
-                    >
-                      {message.content as string}
+                    // <pre
+                    //   className={`font-roboto text-left w-full whitespace-pre-wrap`}
+                    // >
+                    //   {message.content as string}
+                    //   {message.fileUrl && message.role === "user" && (
+                    //     <img
+                    //       src={message.fileUrl}
+                    //       alt=""
+                    //       height={150}
+                    //       width={150}
+                    //     />
+                    //   )}
+                    // </pre>
+                    <>
+                      <MarkDownContent
+                        className={`font-roboto text-left w-full whitespace-pre-wrap`}
+                      >
+                        {message.content as string}
+                      </MarkDownContent>
                       {message.fileUrl && message.role === "user" && (
                         <img
                           src={message.fileUrl}
@@ -256,7 +272,7 @@ export default function PlaceholderContent1({ id }: Props) {
                           width={150}
                         />
                       )}
-                    </pre>
+                    </>
                   ) : (
                     <div className="w-full h-full flex flex-grow justify-center items-center ">
                       <iframe
@@ -304,7 +320,7 @@ export default function PlaceholderContent1({ id }: Props) {
         className={cn(
           // "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
           // sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
-          "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 ml-0"
+          "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-8 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 ml-0"
         )}
       >
         <div className="w-full  max-w-xl mx-auto ">

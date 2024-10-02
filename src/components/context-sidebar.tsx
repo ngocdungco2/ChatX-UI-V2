@@ -7,27 +7,28 @@ import {
   ContextMenuTrigger
 } from "@/components/ui/context-menu";
 import { useToast } from "@/hooks/use-toast";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 interface ContentLayoutProps {
   children: React.ReactNode;
   apiKey?: string;
   type?: string;
   chatId?: string;
+  refreshList?: any;
+  botActive?: any;
 }
 
 export const ContextMenuSidebar = ({
   children,
   apiKey,
-  chatId
-}: ContentLayoutProps) => {
+  chatId,
+  // Cập nhật lại
+  refreshList,
+  botActive
+}: // nhận biết để lấy lại bot active
+// isUpdate
+ContentLayoutProps) => {
   const [listBot, setListBot] = useState(() => {
     const data = localStorage.getItem("apiKey");
-    if (data) {
-      return JSON.parse(data);
-    }
-  });
-  const [activeBot, setActiveBot] = useState(() => {
-    const data = localStorage.getItem("activeBot");
     if (data) {
       return JSON.parse(data);
     }
@@ -43,7 +44,7 @@ export const ContextMenuSidebar = ({
   const handleRemove = async () => {
     if (apiKey) {
       if (!listBot) return;
-      if (apiKey === activeBot.key) {
+      if (apiKey === botActive.key) {
         toast({ description: "Không thể xoá api đang dùng" });
         return null;
       }
@@ -52,15 +53,20 @@ export const ContextMenuSidebar = ({
         return item.key !== apiKey;
       });
       setListBot(data);
-      window.location.reload();
+      // console.log("bot dang dung la", activeBot);
+      refreshList(botActive.key, botActive.type);
+      // window.location.reload();
       toast({ description: "Danh sách AI đã được cập nhật!!" });
     } else {
       const cId = chatId?.replace("/dashboard/", "");
-      const action = await deleteChat(cId, "abc-123", activeBot.key);
+      const action = await deleteChat(cId, "abc-123", botActive.key);
       console.log(action);
     }
   };
-
+  // nhận biết lúc nào đổi bot đang dùng
+  // useEffect(() => {
+  //   console.log(isUpdate);
+  // }, [isUpdate1]);
   useEffect(() => {
     localStorage.setItem("apiKey", JSON.stringify(listBot));
   }, [listBot]);
