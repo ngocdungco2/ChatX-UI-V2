@@ -3,16 +3,14 @@ import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useEffect, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import {
   getHistoryChat,
   sendImageToAgentV2,
   sendMessage,
-  sendMessageToAgent,
   sendMessageToAgentV2,
-  sendMessageWithPicture,
-  sendMessageWithPictureToAgent
+  sendMessageWithPicture
 } from "@/action/request";
 import Loading from "@/app/(demo)/dashboard/loading";
 import AboutCard from "../about";
@@ -21,8 +19,7 @@ import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
 import { initialStart } from "@/action/initial";
-import { ContextMenuSidebar } from "../context-sidebar";
-import { Textarea } from "../ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 type Props = {
   id?: string;
 };
@@ -44,6 +41,7 @@ export default function PlaceholderContent1({ id }: Props) {
   const pathname = usePathname();
   const fileRef = useRef<HTMLInputElement>(null);
   const submutButtonRef = useRef(null);
+  const inputMessageRef = useRef(null);
   //scroll down when load
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
@@ -60,7 +58,7 @@ export default function PlaceholderContent1({ id }: Props) {
   const [filePreview, setFilePreview] = useState("");
   const [isUpload, setIsUpload] = useState(false);
   const router = useRouter();
-
+  const { toast } = useToast();
   const handleSubmit = async (e: React.FormEvent) => {
     setIsTyping(true);
     if (input === "") return;
@@ -109,10 +107,14 @@ export default function PlaceholderContent1({ id }: Props) {
     ]);
     setIsTyping(false);
   };
-  const getPrevChat = async () => {
+  const getPrevChat = useCallback(async () => {
     // TODO: handle error
     if (chatId !== "" && activeBot.key !== "") {
       const history = await getHistoryChat("abc-123", chatId, activeBot.key);
+      if (!history.data) {
+        toast({ description: "trang không hợp lệ vui lòng quay về trang chủ" });
+        return null;
+      }
       const formattedMessages = history.data.flatMap((msg: any) => [
         msg.message_files.length > 0
           ? {
@@ -128,7 +130,7 @@ export default function PlaceholderContent1({ id }: Props) {
     } else {
       throw new Error("Can not get old conversation");
     }
-  };
+  }, [chatId]);
   const handleCopy = async (index: number, text: string) => {
     await navigator.clipboard.writeText(text);
     setIsCopy({ index: index, check: true });
@@ -169,7 +171,7 @@ export default function PlaceholderContent1({ id }: Props) {
   };
 
   const checkIsHtml = (content: string) => {
-    const isHtml = content.includes("<div>");
+    const isHtml = content.includes("<div");
     return isHtml;
   };
 
@@ -190,9 +192,13 @@ export default function PlaceholderContent1({ id }: Props) {
     // console.log(messages);
   }, [messages]);
   useEffect(() => {
-    // router.push(`/dashboard/${chatId}`, { scroll: false });
+    router.push(`/dashboard/${chatId}`, { scroll: false });
+    // redirect(`/dashboard/${chatId}`);
   }, [chatId]);
-
+  useEffect(() => {
+    // @ts-ignore
+    inputMessageRef.current.focus();
+  }, [isTyping]);
   return (
     <div className="group w-full overflow-auto">
       {messages.length <= 0 ? (
@@ -253,7 +259,7 @@ export default function PlaceholderContent1({ id }: Props) {
                     <div className="w-full h-full flex flex-grow justify-center items-center ">
                       <iframe
                         srcDoc={message.content}
-                        className="w-[600px] h-[450px] border-none flex justify-center items-centers overflow-y-scroll no-scrollbar"
+                        className="w-[600px] h-[450px] border-none flex justify-center items-centers"
                         sandbox="allow-scripts"
                       />
                     </div>
@@ -339,7 +345,6 @@ export default function PlaceholderContent1({ id }: Props) {
                       : "hover:cursor-pointer"
                   )}
                   onClick={(e) => handleUpload(e)}
-                  onDrop={(e) => handleUpload(e)}
                 />
 
                 <Input
@@ -348,10 +353,10 @@ export default function PlaceholderContent1({ id }: Props) {
                   onChange={(event) => {
                     setInput(event.target.value);
                   }}
-                  className="w-[95%]  mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto  shadow-none"
+                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto shadow-none"
                   placeholder="Hỏi tôi bất cứ điều gì?"
                   disabled={isTyping}
-                  autoFocus={true}
+                  ref={inputMessageRef}
                 />
                 <Button
                   // type="submit"

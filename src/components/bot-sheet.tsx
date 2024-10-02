@@ -52,22 +52,30 @@ export function SheetBot({ isOpen }: Props) {
         description: "Key bạn vừa nhập không hợp lệ hãy kiểm tra lại"
       });
     } else {
-      setIsValid(true);
-      toast({
-        variant: "default",
-        description: "Key hợp lệ AI đã được thêm vào danh sách"
-      });
-      addToLocal();
-      window.location.reload();
+      if (isDuplicate(inputKey) === false) {
+        setIsValid(true);
+        toast({
+          variant: "default",
+          description: "Key hợp lệ AI đã được thêm vào danh sách"
+        });
+        addToLocal();
+        window.location.reload();
+      } else {
+        setIsValid(false);
+        toast({
+          variant: "destructive",
+          description: "Key đã tồn tại trong danh sách AI vui lòng kiểm tra lại"
+        });
+      }
     }
   };
-  const isDuplicate = () => {
-    const data = localStorage.getItem("apiKey");
-    if (data) {
-      const check = JSON.parse(data).map((item: any) => {
-        item.key === inputKey;
+  const isDuplicate = (key: string) => {
+    const oldKey = localStorage.getItem("apiKey");
+    if (oldKey) {
+      const check = JSON.parse(oldKey).findIndex((item: any) => {
+        return item.key === key;
       });
-      return check ? true : false;
+      return check === -1 ? false : true;
     }
   };
   const addToLocal = () => {
@@ -95,6 +103,7 @@ export function SheetBot({ isOpen }: Props) {
     setInputKey("");
     setInputName("");
     setIsValid(false);
+    setBotType("");
   };
 
   useEffect(() => {

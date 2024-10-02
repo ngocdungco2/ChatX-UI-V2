@@ -5,9 +5,9 @@ export const initialStart = () => {
       "apiKey",
       JSON.stringify([
         {
-          name: "holder",
-          key: "app-tCrGXCUNAnQF6oyaG4PNyLMd",
-          type: "Chatbot"
+          name: "Web support",
+          key: "app-qQppSgsAKdKQ2nw8NRE6xXAs",
+          type: "Agent"
         }
       ])
     );
@@ -16,7 +16,7 @@ export const initialStart = () => {
   if (localStorage.getItem("activeBot") === null) {
     localStorage.setItem(
       "activeBot",
-      JSON.stringify({ key: "app-tCrGXCUNAnQF6oyaG4PNyLMd", type: "Chatbot" })
+      JSON.stringify({ key: "app-qQppSgsAKdKQ2nw8NRE6xXAs", type: "Agent" })
     );
   }
 };

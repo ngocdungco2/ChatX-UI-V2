@@ -1,6 +1,6 @@
 {
   "extends": "next/core-web-vitals",
-  // TODO: optimize code to remove thí rule
+  // TODO: optimize code to remove this rule
   "rules": {
     "react-hooks/rules-of-hooks": "off"
   }
