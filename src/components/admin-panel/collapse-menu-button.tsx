@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
-import { ChevronDown, Dot, LucideIcon } from "lucide-react";
+import { ChevronDown, LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ type Submenu = {
   active: boolean;
   key?: string;
   tag?: string;
+  setActiveKey?: any;
 };
 
 interface CollapseMenuButtonProps {
@@ -44,6 +45,7 @@ interface CollapseMenuButtonProps {
   active: boolean;
   submenus: Submenu[];
   isOpen: boolean | undefined;
+  // setActiveKey: any;
 }
 
 export function CollapseMenuButton({
@@ -52,31 +54,10 @@ export function CollapseMenuButton({
   active,
   submenus,
   isOpen
-}: CollapseMenuButtonProps) {
+}: // setActiveKey
+CollapseMenuButtonProps) {
   const isSubmenuActive = submenus.some((submenu) => submenu.active);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
-  const setActiveKey = (key: string | undefined, tag: string) => {
-    if (key) {
-      localStorage.setItem(
-        "activeBot",
-        JSON.stringify({ key: key, type: tag })
-      );
-      window.location.href = "/dashboard";
-    } else {
-      return null;
-    }
-  };
-  // const [listBot, setListBot] = useState<
-  //   { name: string; key: string; type: string }[]
-  // >([]);
-  // const refreshListBot = (key: string) => {
-  //   const newList = removeBotFromList(listBot, key);
-  //   localStorage.setItem("apiKey", JSON.stringify(newList));
-  // };
-  // useEffect(() => {
-  //   const data = localStorage.getItem("apiKey");
-  //   data && setListBot(JSON.parse(data));
-  // }, [listBot]);
   return isOpen ? (
     <Collapsible
       open={isCollapsed}
@@ -122,57 +103,61 @@ export function CollapseMenuButton({
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-        {submenus.map(({ href, label, active, key, tag }, index) => (
-          // this
-          <ContextMenuSidebar apiKey={key} chatId={href} key={index}>
-            <Button
-              key={index}
-              variant={active ? "sideBtn" : "ghost"}
-              className={cn(
-                "justify-start h-10 mb-2 mt-1 shadow-none w-full"
-                // active ? "w-[80%]" : "w-full"
-              )}
-              onClick={() => {
-                if (tag) {
-                  setActiveKey(key, tag);
-                }
-              }}
-              asChild
-            >
-              {/* nếu không có key tức là item của lịch sử */}
-              <Link
-                href={key ? "/dashboard" : href}
-                scroll={false}
-                className="flex justify-start"
+        {submenus.map(
+          ({ href, label, active, key, tag, setActiveKey }, index) => (
+            // this
+            <ContextMenuSidebar apiKey={key} chatId={href} key={index}>
+              <Button
+                key={index}
+                variant={active ? "sideBtn" : "ghost"}
+                className={cn(
+                  "justify-start h-10 mb-2 mt-1 shadow-none w-full"
+                  // active ? "w-[80%]" : "w-full"
+                )}
+                onClick={() => {
+                  if (tag) {
+                    // @ts-ignore
+                    setActiveKey(key, tag);
+                    // console.log("click");
+                    // updateActiveBot(key, tag);
+                  }
+                }}
+                asChild
               >
-                <span
-                  className={cn(
-                    "mr-4 ml-2",
-                    key &&
-                      "flex justify-center items-center w-[35px] h-[30px] rounded-md bg-[#615370]"
-                  )}
+                {/* nếu không có key tức là item của lịch sử */}
+                <Link
+                  href={key ? "/dashboard" : href}
+                  scroll={false}
+                  className="flex justify-start"
                 >
-                  {key && (
-                    <Image
-                      src="/bot.svg"
-                      alt="boticon"
-                      width={18}
-                      height={18}
-                      className="w-[25px] h-[25px] "
-                    />
-                  )}
-                </span>
-                <p
-                  className={cn(
-                    "max-w-[170px] truncate text-left",
-                    isOpen
-                      ? "translate-x-0 opacity-100"
-                      : "-translate-x-96 opacity-0"
-                  )}
-                >
-                  {label}
-                </p>
-                {/* <span className="ml-2 flex justify-center items-center">
+                  <span
+                    className={cn(
+                      "mr-4 ml-2",
+                      key &&
+                        "flex justify-center items-center w-[35px] h-[30px] rounded-md bg-[#615370]"
+                    )}
+                  >
+                    {key && (
+                      <Image
+                        src="/bot.svg"
+                        alt="boticon"
+                        width={18}
+                        height={18}
+                        className="w-[25px] h-[25px] "
+                      />
+                    )}
+                  </span>
+                  <p
+                    className={cn(
+                      "max-w-[170px] truncate text-left",
+                      isOpen
+                        ? "translate-x-0 opacity-100"
+                        : "-translate-x-96 opacity-0"
+                    )}
+                  >
+                    {label}
+                  </p>
+                  {/* <span className="ml-2 flex justify-center items-center">
                   {key && (
                     <Image
                       src={"/nextwhite.svg"}
@@ -183,10 +168,11 @@ export function CollapseMenuButton({
                     />
                   )}
                 </span> */}
-              </Link>
-            </Button>
-          </ContextMenuSidebar>
-        ))}
+                </Link>
+              </Button>
+            </ContextMenuSidebar>
+          )
+        )}
       </CollapsibleContent>
     </Collapsible>
   ) : (

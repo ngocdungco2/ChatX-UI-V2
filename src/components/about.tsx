@@ -8,7 +8,7 @@ import {
 
 export default function AboutCard() {
   return (
-    <div className="max-w-xl mx-auto mt-10 mb-[500px]">
+    <div className="max-w-xl mx-auto mt-10">
       <Card className="">
         <CardHeader>
           <CardTitle>ChatX</CardTitle>

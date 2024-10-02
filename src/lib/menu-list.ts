@@ -10,6 +10,7 @@ type Submenu = {
   active: boolean;
   key?: string;
   tag?: string;
+  setActiveKey?: any;
 };
 
 type Menu = {
@@ -25,7 +26,9 @@ type Group = {
   groupLabel: string;
   menus: Menu[];
 };
-
+export const refreshListBot = () => {
+  setIsRefresh(!isRefresh);
+};
 export function getMenuList(pathname: string): Group[] {
   const [history, setHistory] = useState<{ id: string; name: string }[]>([]);
 
@@ -33,8 +36,8 @@ export function getMenuList(pathname: string): Group[] {
   const [listBot, setListBot] = useState<
     { name: string; key: string; type: string }[]
   >([]);
-
   const router = useRouter();
+  const [isRefresh, setIsRefresh] = useState(false);
 
   const getHistory = async () => {
     if (!activeBot) return null;
@@ -56,6 +59,25 @@ export function getMenuList(pathname: string): Group[] {
     }
   };
 
+  const updateActiveBot = (key: string, type: string) => {
+    const newActiveBot = { key, type };
+    setActiveBot(newActiveBot);
+    localStorage.setItem("activeBot", JSON.stringify(newActiveBot));
+    getListBot();
+  };
+
+  const setActiveKey = (key: string | undefined, tag: string) => {
+    if (key) {
+      localStorage.setItem(
+        "activeBot",
+        JSON.stringify({ key: key, type: tag })
+      );
+      setIsRefresh(!isRefresh);
+      // window.location.href = "/dashboard";
+    } else {
+      return null;
+    }
+  };
   useEffect(() => {
     const data = localStorage.getItem("activeBot");
     data ? setActiveBot(JSON.parse(data)) : console.log("Khong co activebot");
@@ -67,6 +89,12 @@ export function getMenuList(pathname: string): Group[] {
   useEffect(() => {
     getHistory();
   }, [activeBot]);
+  // mỗi lần thông báo refresh thì lấy lại state
+  useEffect(() => {
+    const data = localStorage.getItem("activeBot");
+    data ? setActiveBot(JSON.parse(data)) : console.log("Khong co activebot");
+    getListBot();
+  }, [isRefresh]);
   return [
     {
       groupLabel: "",
@@ -108,7 +136,8 @@ export function getMenuList(pathname: string): Group[] {
               label: item.name,
               active: item.key === activeBot?.key,
               key: item.key,
-              tag: item.type
+              tag: item.type,
+              setActiveKey: setActiveKey
             }))
           ]
         },

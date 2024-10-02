@@ -60,7 +60,7 @@ export const getHistoryChat = async (
     return data;
   } catch (error) {
     // console.error("Error get history chat:", error);
-    throw new Error("Cant not fetch previous chat with Bot");
+    throw new Error("Can not fetch previous chat with Bot");
   }
 };
 
@@ -166,7 +166,7 @@ export const sendMessageWithPicture = async (
     const data = await res.json();
     return data;
   } catch (e) {
-    throw new Error("Cant not upload file");
+    throw new Error("Can not upload file");
   }
 };
 export const uploadImageToServer = async (
@@ -453,7 +453,6 @@ export const sendImageToAgentV2 = async (
     }
 
     const answer = result.trim();
-    console.log("Final answer:", answer);
     return { answer, conversation_id };
   } catch (e) {
     console.error("Error in sendMessageToAgentV2:", e);

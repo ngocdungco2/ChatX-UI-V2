@@ -25,7 +25,6 @@ type Props = {
 };
 
 export default function PlaceholderContent1({ id }: Props) {
-  // const [messages, setMessages] = useState<CoreMessage[]>([]);
   const [messages, setMessages] = useState<
     { role: string; content: string; fileUrl?: any }[]
   >([]);
@@ -171,7 +170,10 @@ export default function PlaceholderContent1({ id }: Props) {
   };
 
   const checkIsHtml = (content: string) => {
-    const isHtml = content.includes("<div");
+    const isHtml =
+      content.includes("<div") ||
+      content.includes("<html") ||
+      content.includes("<script");
     return isHtml;
   };
 

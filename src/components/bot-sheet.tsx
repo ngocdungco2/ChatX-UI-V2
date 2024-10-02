@@ -30,6 +30,7 @@ import {
 type Props = {
   isOpen: boolean | undefined;
 };
+// TODO: hash key
 export function SheetBot({ isOpen }: Props) {
   const [inputName, setInputName] = useState("");
   const [inputKey, setInputKey] = useState("");

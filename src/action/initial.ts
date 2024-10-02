@@ -5,7 +5,7 @@ export const initialStart = () => {
       "apiKey",
       JSON.stringify([
         {
-          name: "Web support",
+          name: "ChatX support",
           key: "app-qQppSgsAKdKQ2nw8NRE6xXAs",
           type: "Agent"
         }

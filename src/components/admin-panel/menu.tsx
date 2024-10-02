@@ -17,6 +17,7 @@ import {
 import { SheetName } from "../nameSheet";
 import { SheetBot } from "../bot-sheet";
 import Image from "next/image";
+import { useState } from "react";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -26,7 +27,17 @@ export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
   const router = useRouter();
-
+  const setActiveKey1 = (key: string | undefined, tag: string) => {
+    if (key) {
+      localStorage.setItem(
+        "activeBot",
+        JSON.stringify({ key: key, type: tag })
+      );
+      // window.location.href = "/dashboard";
+    } else {
+      return null;
+    }
+  };
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
       <nav className="mt-8 h-full w-full">
