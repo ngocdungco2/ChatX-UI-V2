@@ -29,6 +29,7 @@ import {
 import Image from "next/image";
 import { SheetBot } from "../bot-sheet";
 import { ContextMenuSidebar } from "../context-sidebar";
+import useLocalStorage from "@/hooks/use-localstorage";
 
 type Submenu = {
   href: string;
@@ -59,6 +60,7 @@ export function CollapseMenuButton({
 CollapseMenuButtonProps) {
   const isSubmenuActive = submenus.some((submenu) => submenu.active);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
+
   return isOpen ? (
     <Collapsible
       open={isCollapsed}
@@ -110,7 +112,7 @@ CollapseMenuButtonProps) {
             index
           ) => (
             // this
-            <>
+            <div key={index}>
               {index === 0 && key && (
                 <SheetBot
                   isOpen={isOpen}
@@ -135,10 +137,9 @@ CollapseMenuButtonProps) {
                   )}
                   onClick={() => {
                     if (tag) {
-                      // @ts-ignore
                       setActiveKey(key, tag);
-                      // console.log("click");
-                      // updateActiveBot(key, tag);
+                      window.dispatchEvent(new Event("storage"));
+                      // window.location.replace(`/dashboard`);
                     }
                   }}
                   asChild
@@ -190,7 +191,7 @@ CollapseMenuButtonProps) {
                   </Link>
                 </Button>
               </ContextMenuSidebar>
-            </>
+            </div>
           )
         )}
       </CollapsibleContent>

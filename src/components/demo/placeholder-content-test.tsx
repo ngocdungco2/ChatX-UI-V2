@@ -14,13 +14,12 @@ import {
 } from "@/action/request";
 import Loading from "@/app/(demo)/dashboard/loading";
 import AboutCard from "../about";
-import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
-import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
 import { initialStart } from "@/action/initial";
 import { useToast } from "@/hooks/use-toast";
 import MarkDownContent from "react-markdown";
+
 type Props = {
   id?: string;
 };
@@ -30,15 +29,13 @@ export default function PlaceholderContent1({ id }: Props) {
     { role: string; content: string; fileUrl?: any }[]
   >([]);
   const [chatId, setChatId] = useState(id || "");
-  const [activeBot, setActiveBot] = useState(() => {
-    // Khởi tạo từ localStorage
-    const data = localStorage.getItem("activeBot");
-    if (data) {
-      return JSON.parse(data);
-    }
-  });
 
   const pathname = usePathname();
+  const [activeBot, setActiveBot] = useState(() => {
+    const data = localStorage.getItem("activeBot");
+    return data ? JSON.parse(data) : null;
+  });
+  // const [activeBot, setActiveBot] = useLocalStorage("activeBot", null);
   const fileRef = useRef<HTMLInputElement>(null);
   const submutButtonRef = useRef(null);
   const inputMessageRef = useRef(null);
@@ -49,7 +46,6 @@ export default function PlaceholderContent1({ id }: Props) {
   };
   const [input, setInput] = useState<string>("");
 
-  const sidebar = useStore(useSidebarToggle, (state) => state);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isCopy, setIsCopy] = useState<{ index: number; check: boolean }>();
   // luu file
@@ -59,6 +55,12 @@ export default function PlaceholderContent1({ id }: Props) {
   const [isUpload, setIsUpload] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const reloadKey = () => {
+    const data = localStorage.getItem("activeBot");
+    if (data) {
+      setActiveBot(JSON.parse(data));
+    }
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     setIsTyping(true);
     if (input === "") return;
@@ -85,7 +87,10 @@ export default function PlaceholderContent1({ id }: Props) {
       ]);
     }
     setInput("");
-
+    // @ts-ignore
+    if (!activeBot) {
+      return null;
+    }
     const result =
       file !== null
         ? activeBot.type === "Chatbot"
@@ -94,6 +99,9 @@ export default function PlaceholderContent1({ id }: Props) {
         : activeBot.type === "Chatbot"
         ? await sendMessage(input, chatId, activeBot.key)
         : await sendMessageToAgentV2(input, chatId, activeBot.key);
+
+    // console.log("test: ", activeBot.key);
+
     setChatId(result.conversation_id);
     setFile(null);
     setFilePreview("");
@@ -109,6 +117,7 @@ export default function PlaceholderContent1({ id }: Props) {
   };
   const getPrevChat = useCallback(async () => {
     // TODO: handle error
+    if (!activeBot) return null;
     if (chatId !== "" && activeBot.key !== "") {
       const history = await getHistoryChat("abc-123", chatId, activeBot.key);
       if (!history.data) {
@@ -136,6 +145,7 @@ export default function PlaceholderContent1({ id }: Props) {
     setIsCopy({ index: index, check: true });
   };
   const uploadImageToServer = async () => {
+    if (!activeBot) return null;
     try {
       const formData = new FormData();
       if (file) {
@@ -178,6 +188,19 @@ export default function PlaceholderContent1({ id }: Props) {
     return isHtml;
   };
 
+  // check activebot by event
+  useEffect(() => {
+    const listenStorageChange = () => {
+      const data = localStorage.getItem("activeBot");
+      if (!data) return null;
+      if (data !== activeBot) {
+        setActiveBot(JSON.parse(data));
+      }
+    };
+    window.addEventListener("storage", listenStorageChange);
+    return () => window.removeEventListener("storage", listenStorageChange);
+  }, []);
+
   useEffect(() => {
     // TODO: remove this initial or hash apikey
     initialStart();
@@ -189,19 +212,21 @@ export default function PlaceholderContent1({ id }: Props) {
     if (chatId) {
       messages.length <= 0 ? getPrevChat() : console.log("khong the lay tin");
     }
+    // console.log(activeBot.key);
   }, [activeBot]);
   useEffect(() => {
     scrollToBottom();
     // console.log(messages);
   }, [messages]);
   useEffect(() => {
-    router.push(`/dashboard/${chatId}`, { scroll: false });
-    // redirect(`/dashboard/${chatId}`);
+    reloadKey();
+    // router.push(`/dashboard/${chatId}`, { scroll: false });
   }, [chatId]);
   useEffect(() => {
     // @ts-ignore
     inputMessageRef.current.focus();
   }, [isTyping]);
+
   return (
     <div className="group w-full overflow-auto">
       {messages.length <= 0 ? (
@@ -228,7 +253,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   <Image
                     src={
                       message.role === "user"
-                        ? "/avataruser.png"
+                        ? "/minion.webp"
                         : "/chatxavatar.png"
                     }
                     alt={`${
@@ -245,19 +270,6 @@ export default function PlaceholderContent1({ id }: Props) {
                   } overflow-hidden `}
                 >
                   {!checkIsHtml(message.content) ? (
-                    // <pre
-                    //   className={`font-roboto text-left w-full whitespace-pre-wrap`}
-                    // >
-                    //   {message.content as string}
-                    //   {message.fileUrl && message.role === "user" && (
-                    //     <img
-                    //       src={message.fileUrl}
-                    //       alt=""
-                    //       height={150}
-                    //       width={150}
-                    //     />
-                    //   )}
-                    // </pre>
                     <>
                       <MarkDownContent
                         className={`font-roboto text-left w-full whitespace-pre-wrap`}
@@ -320,7 +332,7 @@ export default function PlaceholderContent1({ id }: Props) {
         className={cn(
           // "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
           // sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
-          "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-8 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 ml-0"
+          "inset-x-0 z-50 lg:mb-[30px] mg-0 lg:bottom-3.5 bottom-0 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 ml-0"
         )}
       >
         <div className="w-full  max-w-xl mx-auto ">

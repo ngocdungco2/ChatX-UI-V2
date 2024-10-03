@@ -41,7 +41,7 @@ export function SheetMenu() {
                   alt="logo"
                   height={40}
                   width={120}
-                  className="mx-1"
+                  className="mx-1 h-auto w-auto"
                 />
               </SheetTitle>
             </Link>

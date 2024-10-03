@@ -1,5 +1,6 @@
 import { initialStart } from "@/action/initial";
 import { getHistoryConversation } from "@/action/request";
+import useLocalStorage from "@/hooks/use-localstorage";
 import { Tag, LayoutGrid, LucideIcon, HistoryIcon, List } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -31,7 +32,10 @@ type Group = {
 export function getMenuList(pathname: string): Group[] {
   const [history, setHistory] = useState<{ id: string; name: string }[]>([]);
 
-  const [activeBot, setActiveBot] = useState<{ key: string; type: string }>();
+  const [activeBot, setActiveBot] = useState(() => {
+    const data = localStorage.getItem("activeBot");
+    return data && JSON.parse(data);
+  });
   const [listBot, setListBot] = useState<
     { name: string; key: string; type: string }[]
   >([]);
@@ -81,6 +85,7 @@ export function getMenuList(pathname: string): Group[] {
   }, [router]);
   useEffect(() => {
     getHistory();
+    // console.log("menu-list: ", activeBot);
   }, [activeBot]);
   // mỗi lần thông báo refresh thì lấy lại state
   useEffect(() => {

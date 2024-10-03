@@ -27,17 +27,7 @@ export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
   const router = useRouter();
-  const setActiveKey1 = (key: string | undefined, tag: string) => {
-    if (key) {
-      localStorage.setItem(
-        "activeBot",
-        JSON.stringify({ key: key, type: tag })
-      );
-      // window.location.href = "/dashboard";
-    } else {
-      return null;
-    }
-  };
+
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
       <nav className="mt-8 h-full w-full">
@@ -74,9 +64,13 @@ export function Menu({ isOpen }: MenuProps) {
                             <Button
                               variant={active ? "active" : "sideBtn"}
                               className="w-full flex justify-start h-10 "
+                              onClick={() => {
+                                // @ts-ignore
+                                window.location.replace(href);
+                              }}
                               asChild
                             >
-                              <Link href={href} scroll={false}>
+                              <Link href={"#"} scroll={false}>
                                 <span
                                   className={cn(isOpen === false ? "" : "mr-4")}
                                 >

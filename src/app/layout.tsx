@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 
 import "./globals.css";
+import Loading from "./loading";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className="bg-[#1e0c31] shadow-none border-none ">
         {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
         {children}
+        <Loading />
         {/* </ThemeProvider> */}
       </body>
     </html>
