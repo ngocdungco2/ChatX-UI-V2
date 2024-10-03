@@ -22,7 +22,7 @@ export default function AdminPanelLayout({
         <main
           // border-[#1e0c31] border-[10px] border-b-0
           className={cn(
-            "lg:h-[calc(97vh_-_theme(spacing.20))] h-[calc(96vh_-_theme(spacing.6))] transition-[margin-left] ease-in-out duration-300 overflow-auto  bg-gradient-to-br from-pink-100 via-slate-100 to-blue-100  lg:rounded-t-3xl lg:mt-3.5 lg:mr-3.5 overflow-y-scroll no-scrollbar",
+            "lg:h-[calc(97vh_-_theme(spacing.20))] h-[94vh] transition-[margin-left] ease-in-out duration-300 overflow-auto  bg-gradient-to-br from-pink-100 via-slate-100 to-blue-100  lg:rounded-t-3xl lg:mt-3.5 lg:mr-3.5 overflow-y-scroll no-scrollbar",
             // @ts-ignore
             sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-[280px] "
           )}

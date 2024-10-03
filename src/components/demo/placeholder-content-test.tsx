@@ -19,6 +19,7 @@ import { MessSkeleton } from "../message-skeleton";
 import { initialStart } from "@/action/initial";
 import { useToast } from "@/hooks/use-toast";
 import MarkDownContent from "react-markdown";
+import { revalidatePath } from "next/cache";
 
 type Props = {
   id?: string;
@@ -55,12 +56,7 @@ export default function PlaceholderContent1({ id }: Props) {
   const [isUpload, setIsUpload] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const reloadKey = () => {
-    const data = localStorage.getItem("activeBot");
-    if (data) {
-      setActiveBot(JSON.parse(data));
-    }
-  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     setIsTyping(true);
     if (input === "") return;
@@ -219,8 +215,7 @@ export default function PlaceholderContent1({ id }: Props) {
     // console.log(messages);
   }, [messages]);
   useEffect(() => {
-    reloadKey();
-    // router.push(`/dashboard/${chatId}`, { scroll: false });
+    router.push(`/dashboard/${chatId}`, { scroll: false });
   }, [chatId]);
   useEffect(() => {
     // @ts-ignore
