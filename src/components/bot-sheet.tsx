@@ -142,22 +142,15 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
           >
             New AI bot
           </span>
-          {/* <span>
-            <Image
-              src="/new.svg"
-              alt="logo add ai"
-              width={18}
-              height={18}
-              className="ml-2 w-[25px] h-[25px] "
-            />
-          </span> */}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Create a new bot with API-key</SheetTitle>
+          <SheetTitle>Thêm Chatbot vào danh sách</SheetTitle>
           <SheetDescription>
-            Nhập tên và api key sau đó nhấn check để kiểm tra dữ liệu
+            Vào studio chọn Chatbot hoặc Agent bạn cần thêm sau đó lấy apikey và
+            điền vào các textbox sau chọn kiểu bot của bạn sau đó Save changes
+            để có thể lưu thay đổi
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
@@ -174,7 +167,7 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
-              Api key:
+              Apikey:
             </Label>
             <Input
               className="col-span-3 "

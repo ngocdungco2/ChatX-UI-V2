@@ -5,21 +5,30 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
+import Image from "next/image";
 
 export default function AboutCard() {
   return (
-    <div className="max-w-xl mx-auto lg:mt-10 mt-0 ">
-      <Card className="">
+    <div className="max-w-xl mx-auto lg:mt-10 mt-0">
+      <Card className="shadow-none border-none">
         <CardHeader>
-          <CardTitle>ChatX</CardTitle>
-          <CardDescription>Ask me something</CardDescription>
+          <CardTitle>
+            <Image
+              src={"/logopurple.svg"}
+              alt="123"
+              width={30}
+              height={30}
+              className="w-[120px] h-auto"
+            />
+          </CardTitle>
+          <CardDescription>Trợ lý AI dành cho doanh nghiệp</CardDescription>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground/90 leading-normal prose lg:block hidden">
           <p className="mb-3">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique
-            quibusdam necessitatibus ex ab enim explicabo error adipisci sed
-            ipsa fuga, ratione dolore numquam voluptates vitae! Fugit dicta unde
-            totam rem!
+            ChatX sử dụng các mô hình AI tiên tiến nhất (Gemini, GPT-4o, Claude
+            3, v.v.) kết hợp với dữ liệu doanh nghiệp của bạn và CRM để giúp bạn
+            tạo ra các Ai Bot thực hiện các nhiệm vụ thay thế con người và nhiều
+            hơn nữa.
           </p>
         </CardContent>
       </Card>

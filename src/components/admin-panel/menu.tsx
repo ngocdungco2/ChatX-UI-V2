@@ -64,13 +64,13 @@ export function Menu({ isOpen }: MenuProps) {
                             <Button
                               variant={active ? "active" : "sideBtn"}
                               className="w-full flex justify-start h-10 "
-                              onClick={() => {
-                                // @ts-ignore
-                                window.location.replace(href);
-                              }}
+                              // onClick={() => {
+                              //   // @ts-ignore
+                              //   window.location.replace(href);
+                              // }}
                               asChild
                             >
-                              <Link href={"#"} scroll={false}>
+                              <Link href={href} scroll={false}>
                                 <span
                                   className={cn(isOpen === false ? "" : "mr-4")}
                                 >

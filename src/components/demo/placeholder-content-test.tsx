@@ -58,6 +58,7 @@ export default function PlaceholderContent1({ id }: Props) {
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
+    if (!activeBot) return null;
     setIsTyping(true);
     if (input === "") return;
     e.preventDefault();
@@ -95,8 +96,6 @@ export default function PlaceholderContent1({ id }: Props) {
         : activeBot.type === "Chatbot"
         ? await sendMessage(input, chatId, activeBot.key)
         : await sendMessageToAgentV2(input, chatId, activeBot.key);
-
-    // console.log("test: ", activeBot.key);
 
     setChatId(result.conversation_id);
     setFile(null);
@@ -223,7 +222,7 @@ export default function PlaceholderContent1({ id }: Props) {
   }, [isTyping]);
 
   return (
-    <div className="group w-full overflow-auto">
+    <div className="group w-full overflow-auto ">
       {messages.length <= 0 ? (
         pathname === "/dashboard" ? (
           <AboutCard />

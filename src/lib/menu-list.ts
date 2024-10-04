@@ -93,6 +93,7 @@ export function getMenuList(pathname: string): Group[] {
     data ? setActiveBot(JSON.parse(data)) : console.log("Khong co activebot");
     getListBot();
   }, [isRefresh]);
+
   return [
     {
       groupLabel: "",
