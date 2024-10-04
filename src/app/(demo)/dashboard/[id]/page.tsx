@@ -10,7 +10,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
 
   const getHistory = useCallback(
     async (botKey: string) => {
-      const get = await getHistoryConversation("abc-123", botKey);
+      const get = await getHistoryConversation(botKey);
       if (get.data === undefined) {
         return null;
       } else {
