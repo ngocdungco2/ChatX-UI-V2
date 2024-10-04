@@ -14,7 +14,6 @@ import {
   sendMessageWithPicture
 } from "@/action/request";
 import Loading from "@/app/(demo)/dashboard/loading";
-import AboutCard from "../about";
 import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
 import { initialStart } from "@/action/initial";

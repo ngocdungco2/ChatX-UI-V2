@@ -24,7 +24,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      // className="overflow-y-scroll no-scrollbar"
+      className="overflow-y-scroll no-scrollbar"
     >
       <link rel="icon" href="/logo.png" type="image/x-icon" />
       <body className="bg-[#1e0c31] shadow-none border-none ">
