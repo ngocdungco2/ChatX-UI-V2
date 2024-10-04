@@ -18,7 +18,7 @@ export default function AboutCard() {
               alt="123"
               width={30}
               height={30}
-              className="w-[120px] h-auto"
+              className="w-[100px] h-auto"
             />
           </CardTitle>
           <CardDescription>Trợ lý AI dành cho doanh nghiệp</CardDescription>
