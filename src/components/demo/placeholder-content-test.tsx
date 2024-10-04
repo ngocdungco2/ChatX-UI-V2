@@ -3,8 +3,8 @@ import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import {
   getCloudflareIP,
   getHistoryChat,
@@ -177,6 +177,7 @@ export default function PlaceholderContent1({ id }: Props) {
       throw new Error("Can not upload file");
     }
   };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
@@ -239,7 +240,8 @@ export default function PlaceholderContent1({ id }: Props) {
     <div className="group w-full overflow-auto ">
       {messages.length <= 0 ? (
         pathname === "/dashboard" ? (
-          <AboutCard />
+          // <AboutCard />
+          ""
         ) : (
           <Loading />
         )
