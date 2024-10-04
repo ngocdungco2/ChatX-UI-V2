@@ -1,4 +1,12 @@
 {
   "prettier.singleQuote": false,
-  "prettier.trailingComma": "none"
+  "prettier.trailingComma": "none",
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "javascript": "javascript",
+    "css": "css"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  }
 }

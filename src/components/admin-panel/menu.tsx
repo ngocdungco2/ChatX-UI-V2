@@ -79,16 +79,18 @@ export function Menu({ isOpen }: MenuProps) {
                                     <Image
                                       src="/newchat.svg"
                                       alt="icon new chat"
-                                      width={18}
-                                      height={18}
+                                      width={24}
+                                      height={24}
+                                      className="ml-4"
                                     />
                                   ) : (
                                     tag === "Explore" && (
                                       <Image
                                         src="/home.svg"
                                         alt="icon new chat"
-                                        width={18}
-                                        height={18}
+                                        width={24}
+                                        height={24}
+                                        className="ml-4"
                                       />
                                     )
                                   )}

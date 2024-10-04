@@ -6,6 +6,7 @@ import { Input } from "../ui/input";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import {
+  getCloudflareIP,
   getHistoryChat,
   sendImageToAgentV2,
   sendMessage,
@@ -19,7 +20,6 @@ import { MessSkeleton } from "../message-skeleton";
 import { initialStart } from "@/action/initial";
 import { useToast } from "@/hooks/use-toast";
 import MarkDownContent from "react-markdown";
-import { revalidatePath } from "next/cache";
 
 type Props = {
   id?: string;
@@ -64,6 +64,24 @@ export default function PlaceholderContent1({ id }: Props) {
     e.preventDefault();
     const image = isUpload && (await uploadImageToServer());
     setIsUpload(false);
+
+    // const isFirstChat = !chatId;
+    let result: any;
+    // if (isFirstChat) {
+    //   result =
+    //     file !== null
+    //       ? activeBot.type === "Chatbot"
+    //         ? await sendMessageWithPicture(
+    //             input,
+    //             chatId,
+    //             activeBot.key,
+    //             image.id
+    //           )
+    //         : await sendImageToAgentV2(input, chatId, activeBot.key, image.id)
+    //       : activeBot.type === "Chatbot"
+    //       ? await sendMessage(input, chatId, activeBot.key)
+    //       : await sendMessageToAgentV2(input, chatId, activeBot.key);
+    // }
     // Lấy tin nhắn người dùng
     if (file === null) {
       setMessages((prev) => [
@@ -84,11 +102,8 @@ export default function PlaceholderContent1({ id }: Props) {
       ]);
     }
     setInput("");
-    // @ts-ignore
-    if (!activeBot) {
-      return null;
-    }
-    const result =
+    // if (!isFirstChat) {
+    result =
       file !== null
         ? activeBot.type === "Chatbot"
           ? await sendMessageWithPicture(input, chatId, activeBot.key, image.id)
@@ -96,7 +111,7 @@ export default function PlaceholderContent1({ id }: Props) {
         : activeBot.type === "Chatbot"
         ? await sendMessage(input, chatId, activeBot.key)
         : await sendMessageToAgentV2(input, chatId, activeBot.key);
-
+    // }
     setChatId(result.conversation_id);
     setFile(null);
     setFilePreview("");
@@ -110,11 +125,11 @@ export default function PlaceholderContent1({ id }: Props) {
     ]);
     setIsTyping(false);
   };
-  const getPrevChat = useCallback(async () => {
+  const getPrevChat = async () => {
     // TODO: handle error
     if (!activeBot) return null;
     if (chatId !== "" && activeBot.key !== "") {
-      const history = await getHistoryChat("abc-123", chatId, activeBot.key);
+      const history = await getHistoryChat(chatId, activeBot.key);
       if (!history.data) {
         toast({ description: "trang không hợp lệ vui lòng quay về trang chủ" });
         return null;
@@ -134,18 +149,20 @@ export default function PlaceholderContent1({ id }: Props) {
     } else {
       throw new Error("Can not get old conversation");
     }
-  }, [chatId]);
+  };
   const handleCopy = async (index: number, text: string) => {
     await navigator.clipboard.writeText(text);
     setIsCopy({ index: index, check: true });
   };
   const uploadImageToServer = async () => {
     if (!activeBot) return null;
+    const username: any = await getCloudflareIP();
+    if (!username) return null;
     try {
       const formData = new FormData();
       if (file) {
         formData.append("file", file);
-        formData.append("user", "abc-123");
+        formData.append("user", username);
       }
       const res = await fetch("https://api.chatx.vn/v1/files/upload", {
         method: "POST",
@@ -174,7 +191,6 @@ export default function PlaceholderContent1({ id }: Props) {
   const handleUpload = (e: any) => {
     fileRef.current?.click();
   };
-
   const checkIsHtml = (content: string) => {
     const isHtml =
       content.includes("<div") ||
@@ -198,29 +214,27 @@ export default function PlaceholderContent1({ id }: Props) {
 
   useEffect(() => {
     // TODO: remove this initial or hash apikey
-    initialStart();
-    // get activebot
-    const getLocalData = localStorage.getItem("activeBot");
-    getLocalData ? setActiveBot(JSON.parse(getLocalData)) : null;
-  }, []);
-  useEffect(() => {
-    if (chatId) {
-      messages.length <= 0 ? getPrevChat() : console.log("khong the lay tin");
+    if (!activeBot) {
+      const getLocalData = localStorage.getItem("activeBot");
+      getLocalData ? setActiveBot(JSON.parse(getLocalData)) : initialStart();
     }
-    // console.log(activeBot.key);
-  }, [activeBot]);
+  }, []);
+
+  useEffect(() => {
+    router.push(`/dashboard/${chatId}`, { scroll: false });
+
+    if (chatId && messages.length === 0) {
+      getPrevChat();
+    }
+  }, [chatId]);
   useEffect(() => {
     scrollToBottom();
     // console.log(messages);
   }, [messages]);
   useEffect(() => {
-    router.push(`/dashboard/${chatId}`, { scroll: false });
-  }, [chatId]);
-  useEffect(() => {
     // @ts-ignore
     inputMessageRef.current.focus();
   }, [isTyping]);
-
   return (
     <div className="group w-full overflow-auto ">
       {messages.length <= 0 ? (
@@ -259,7 +273,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   />
                 </div>
                 <div
-                  className={`mx-2 py-3 px-6 rounded-xl ${
+                  className={`mx-1 p-2 px-4 rounded-xl ${
                     message.role === "user" ? "bg-white" : "bg-white"
                   } overflow-hidden `}
                 >
@@ -291,7 +305,7 @@ export default function PlaceholderContent1({ id }: Props) {
 
                   {message.role === "assistant" && (
                     <Button
-                      className="mt-2"
+                      className="p-0 my-0 h-2 mt-3"
                       variant={"noOutline"}
                       onClick={() => handleCopy(index, message.content)}
                     >
@@ -301,7 +315,7 @@ export default function PlaceholderContent1({ id }: Props) {
                           alt="st"
                           width={15}
                           height={15}
-                          className="w-[15px] h-[15px]"
+                          className="w-[15px] h-[15px] m-0 p-0"
                         />
                       ) : (
                         <Image
@@ -309,7 +323,7 @@ export default function PlaceholderContent1({ id }: Props) {
                           alt="st"
                           width={15}
                           height={15}
-                          className="w-[15px] h-[15px]"
+                          className="w-[15px] h-[15px] m-0 p-0"
                         />
                       )}
                     </Button>
@@ -326,7 +340,7 @@ export default function PlaceholderContent1({ id }: Props) {
         className={cn(
           // "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
           // sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
-          "inset-x-0 z-50 lg:mb-[30px] mg-0 lg:bottom-3.5 bottom-0 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 ml-0"
+          "inset-x-0 z-50 lg:mb-[30px] mg-0 lg:bottom-3.5 bottom-8 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 mx-3"
         )}
       >
         <div className="w-full  max-w-xl mx-auto ">
@@ -349,7 +363,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   }}
                 />
               </div>
-              <div className="flex">
+              <div className="flex justify-center items-center">
                 <Input
                   type="file"
                   className="hidden"
@@ -363,7 +377,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   height={15}
                   width={15}
                   className={cn(
-                    "w-6 h-6 ml-4 mt-1 mr-2",
+                    "w-4 h-4 ml-3 mr-1",
                     isTyping
                       ? "hover:cursor-not-allowed"
                       : "hover:cursor-pointer"
@@ -372,12 +386,12 @@ export default function PlaceholderContent1({ id }: Props) {
                 />
 
                 <Input
-                  type="text"
+                  // type="text"
                   value={input}
                   onChange={(event) => {
                     setInput(event.target.value);
                   }}
-                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto shadow-none"
+                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto shadow-none h-8 resize-none overflow-y-scrollbar no-scrollbar flex justify-center "
                   placeholder="Hỏi tôi bất cứ điều gì?"
                   disabled={isTyping}
                   ref={inputMessageRef}

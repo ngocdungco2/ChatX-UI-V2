@@ -1,5 +1,6 @@
 "use server";
 
+import { get } from "https";
 import { ReactNode } from "react";
 
 export interface Message {
@@ -16,6 +17,7 @@ export const sendMessage = async (
   chatId: string,
   token: string
 ) => {
+  const userIp = await getCloudflareIP();
   try {
     const res = await fetch("https://api.chatx.vn/v1/chat-messages", {
       method: "POST",
@@ -28,7 +30,7 @@ export const sendMessage = async (
         query: question,
         response_mode: "blocking",
         conversation_id: chatId,
-        user: "abc-123"
+        user: userIp
       })
     });
 
@@ -39,14 +41,12 @@ export const sendMessage = async (
   }
 };
 // Previous chat
-export const getHistoryChat = async (
-  userId: string,
-  conversationId: string,
-  token: string
-) => {
+export const getHistoryChat = async (conversationId: string, token: string) => {
+  const userIp = await getCloudflareIP();
+
   try {
     const res = await fetch(
-      `https://api.chatx.vn/v1/messages?user=${userId}&conversation_id=${conversationId}`,
+      `https://api.chatx.vn/v1/messages?user=${userIp}&conversation_id=${conversationId}`,
       {
         method: "GET",
         headers: {
@@ -65,10 +65,11 @@ export const getHistoryChat = async (
 };
 
 // Chat history for sidebar
-export const getHistoryConversation = async (name: string, token: string) => {
+export const getHistoryConversation = async (token: string) => {
+  const userIp = await getCloudflareIP();
   try {
     const res = await fetch(
-      `https://api.chatx.vn/v1/conversations?user=${name}&limit=5`,
+      `https://api.chatx.vn/v1/conversations?user=${userIp}&limit=5`,
       {
         method: "GET",
         headers: {
@@ -141,6 +142,7 @@ export const sendMessageWithPicture = async (
   token: string,
   file: any
 ) => {
+  const userIp = await getCloudflareIP();
   try {
     const res = await fetch("https://api.chatx.vn/v1/chat-messages", {
       method: "POST",
@@ -153,7 +155,7 @@ export const sendMessageWithPicture = async (
         query: question,
         response_mode: "blocking",
         conversation_id: chatId,
-        user: "abc-123",
+        user: userIp,
         files: [
           {
             type: "image",
@@ -169,29 +171,26 @@ export const sendMessageWithPicture = async (
     throw new Error("Can not upload file");
   }
 };
-export const uploadImageToServer = async (
-  user: string,
-  key: string,
-  file: File
-) => {
-  try {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("user", user);
-    const res = await fetch("https://api.chatx.vn/v1/files/upload", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${key}`
-      },
-      body: formData
-    });
-    const data = await res.json();
-    console.log(data);
-    return data.id;
-  } catch (e) {
-    throw new Error("Can not upload file");
-  }
-};
+// export const uploadImageToServer = async (key: string, file: File) => {
+//   const userIp: any = await getCloudflareIP();
+//   try {
+//     const formData = new FormData();
+//     formData.append("file", file);
+//     formData.append("user", userIp);
+//     const res = await fetch("https://api.chatx.vn/v1/files/upload", {
+//       method: "POST",
+//       headers: {
+//         Authorization: `Bearer ${key}`
+//       },
+//       body: formData
+//     });
+//     const data = await res.json();
+//     console.log(data);
+//     return data.id;
+//   } catch (e) {
+//     throw new Error("Can not upload file");
+//   }
+// };
 
 // export const sendMessageToAgent = async (
 //   question: string,
@@ -298,6 +297,8 @@ export const sendMessageToAgentV2 = async (
   chatId: string,
   token: string
 ) => {
+  const userIp = await getCloudflareIP();
+
   try {
     const apiUrl = "https://api.chatx.vn/v1/chat-messages";
     const res = await fetch(apiUrl, {
@@ -311,7 +312,7 @@ export const sendMessageToAgentV2 = async (
         query: question,
         response_mode: "streaming",
         conversation_id: chatId,
-        user: "abc-123"
+        user: userIp
       })
     });
 
@@ -378,6 +379,7 @@ export const sendImageToAgentV2 = async (
   token: string,
   file: any
 ) => {
+  const userIp = await getCloudflareIP();
   try {
     const apiUrl = "https://api.chatx.vn/v1/chat-messages";
     const res = await fetch(apiUrl, {
@@ -392,7 +394,7 @@ export const sendImageToAgentV2 = async (
         response_mode: "streaming",
         api_key: token,
         conversation_id: chatId,
-        user: "abc-123",
+        user: userIp,
         files: [
           {
             type: "image",
@@ -459,3 +461,25 @@ export const sendImageToAgentV2 = async (
     throw new Error("Cannot send message to agent");
   }
 };
+
+export async function getCloudflareIP() {
+  try {
+    const response = await fetch("https://www.cloudflare.com/cdn-cgi/trace");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.text();
+
+    // Sử dụng regex để tìm IP
+    const ipMatch = data.match(/ip=(\d+\.\d+\.\d+\.\d+)/);
+
+    if (ipMatch && ipMatch[1]) {
+      return ipMatch[1];
+    } else {
+      throw new Error("IP not found in the response");
+    }
+  } catch (error) {
+    console.error("Error fetching IP:", error);
+    return null;
+  }
+}

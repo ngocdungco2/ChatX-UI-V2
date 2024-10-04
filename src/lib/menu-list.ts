@@ -44,7 +44,7 @@ export function getMenuList(pathname: string): Group[] {
 
   const getHistory = async () => {
     if (!activeBot) return null;
-    const get = await getHistoryConversation("abc-123", activeBot.key);
+    const get = await getHistoryConversation(activeBot.key);
     if (get.data === undefined) {
       return null;
     } else {
@@ -69,7 +69,6 @@ export function getMenuList(pathname: string): Group[] {
         JSON.stringify({ key: key, type: tag })
       );
       setIsRefresh(!isRefresh);
-      // window.location.href = "/dashboard";
     } else {
       return null;
     }
@@ -80,9 +79,7 @@ export function getMenuList(pathname: string): Group[] {
     data ? setActiveBot(JSON.parse(data)) : console.log("Khong co activebot");
     getListBot();
   }, []);
-  useEffect(() => {
-    getHistory();
-  }, [router]);
+
   useEffect(() => {
     getHistory();
     // console.log("menu-list: ", activeBot);

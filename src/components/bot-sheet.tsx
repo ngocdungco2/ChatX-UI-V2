@@ -156,7 +156,7 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
-              Name:
+              Tên:
             </Label>
             <Input
               className="col-span-3"
@@ -178,15 +178,15 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
-              Bot type:
+              Loại Bot:
             </Label>
             <Select onValueChange={setBotType}>
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-[250px]">
                 <SelectValue placeholder="Select bot type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Select bot type</SelectLabel>
+                  <SelectLabel>Lựa chọn loại bot</SelectLabel>
                   <SelectItem value="Chatbot">Chatbot</SelectItem>
                   <SelectItem value="Agent">Agent</SelectItem>
                 </SelectGroup>
@@ -207,7 +207,7 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
               onClick={() => handleClick()}
               disabled={!(inputName && inputKey && botType)}
             >
-              Save changes
+              Thêm AI
             </Button>
           </SheetClose>
         </SheetFooter>

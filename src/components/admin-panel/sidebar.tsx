@@ -18,7 +18,7 @@ export function Sidebar() {
     <aside
       className={cn(
         "fixed top-0 left-0 z-20 h-screen -translate-x-full lg:translate-x-0 transition-[width] ease-in-out duration-300 shadow-lg bg-[#1e0c31]",
-        sidebar?.isOpen === false ? "w-[90px]" : "w-[280px]"
+        sidebar?.isOpen === false ? "w-[90px]" : "w-[260px]"
       )}
     >
       {/* <SidebarToggle isOpen={sidebar?.isOpen} setIsOpen={sidebar?.setIsOpen} /> */}
@@ -56,7 +56,7 @@ export function Sidebar() {
                 alt="logo"
                 height={40}
                 width={140}
-                className="mt-4 w-auto h-auto"
+                className="mt-5 w-[150px] h-auto"
                 priority={true}
               />
             </h1>

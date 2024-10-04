@@ -40,8 +40,8 @@ export function SheetMenu() {
                   src="/logwhite.svg"
                   alt="logo"
                   height={40}
-                  width={120}
-                  className="mx-1 h-auto w-auto"
+                  width={150}
+                  className="mt-6 h-[150px] w-[150px]"
                 />
               </SheetTitle>
             </Link>
