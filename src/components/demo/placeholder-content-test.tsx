@@ -392,7 +392,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   onChange={(event) => {
                     setInput(event.target.value);
                   }}
-                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto shadow-none h-8 resize-none overflow-y-scrollbar no-scrollbar flex justify-center "
+                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto shadow-none h-8 resize-none overflow-y-scrollbar no-scrollbar flex justify-center text-base"
                   placeholder="Hỏi tôi bất cứ điều gì?"
                   disabled={isTyping}
                   ref={inputMessageRef}

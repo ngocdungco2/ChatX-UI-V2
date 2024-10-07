@@ -29,8 +29,8 @@ import {
 } from "./ui/select";
 type Props = {
   isOpen: boolean | undefined;
-  refreshList: any;
-  botActive: any;
+  refreshList?: any;
+  botActive?: any;
 };
 // TODO: hash key
 

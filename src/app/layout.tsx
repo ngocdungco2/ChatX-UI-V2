@@ -26,6 +26,10 @@ export default function RootLayout({
       suppressHydrationWarning
       className="overflow-y-scroll no-scrollbar"
     >
+      <meta
+        name="viewport"
+        content="width=device-width, height=device-height,  initial-scale=1.0, user-scalable=no,user-scalable=0"
+      />
       <link rel="icon" href="/logo.png" type="image/x-icon" />
       <body className="bg-[#1e0c31] shadow-none border-none ">
         {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}

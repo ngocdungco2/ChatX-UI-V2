@@ -132,18 +132,20 @@ export function Menu({ isOpen }: MenuProps) {
           ))}
           {/* <SheetBot isOpen={isOpen} /> */}
 
-          {/* <li className="w-full grow flex items-end border-none">
-            <div className="flex flex-col w-full justify-between ">
-              <TooltipProvider disableHoverableContent>
-                <Tooltip>
-                  <SheetBot isOpen={isOpen} />
-                  {isOpen === false && (
-                    <TooltipContent side="right">New AI bot</TooltipContent>
-                  )}
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </li> */}
+          {/* {!menuList[2].menus[0].submenus[0] && (
+            <li className="w-full grow flex items-end border-none">
+              <div className="flex flex-col w-full justify-between ">
+                <TooltipProvider disableHoverableContent>
+                  <Tooltip>
+                    <SheetBot isOpen={isOpen} />
+                    {isOpen === false && (
+                      <TooltipContent side="right">New AI bot</TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </li>
+          )} */}
         </ul>
       </nav>
     </ScrollArea>
