@@ -1,3 +1,5 @@
+import { encrypt } from "@/lib/secretKey";
+
 export const initialStart = () => {
   // apikey list
   if (localStorage.getItem("apiKey") === null) {
@@ -6,7 +8,7 @@ export const initialStart = () => {
       JSON.stringify([
         {
           name: "ChatX support",
-          key: "app-qQppSgsAKdKQ2nw8NRE6xXAs",
+          key: encrypt("app-qQppSgsAKdKQ2nw8NRE6xXAs"),
           type: "Agent"
         }
       ])
@@ -16,7 +18,10 @@ export const initialStart = () => {
   if (localStorage.getItem("activeBot") === null) {
     localStorage.setItem(
       "activeBot",
-      JSON.stringify({ key: "app-qQppSgsAKdKQ2nw8NRE6xXAs", type: "Agent" })
+      JSON.stringify({
+        key: encrypt("app-qQppSgsAKdKQ2nw8NRE6xXAs"),
+        type: "Agent"
+      })
     );
   }
 };

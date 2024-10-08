@@ -2,6 +2,7 @@
 import { getHistoryConversation } from "@/action/request";
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import PlaceholderContent1 from "@/components/demo/placeholder-content-test";
+import { decrypt } from "@/lib/secretKey";
 import { useCallback, useEffect, useState } from "react";
 
 export default function DashboardPage({ params }: { params: { id: string } }) {
@@ -10,7 +11,7 @@ export default function DashboardPage({ params }: { params: { id: string } }) {
 
   const getHistory = useCallback(
     async (botKey: string) => {
-      const get = await getHistoryConversation(botKey);
+      const get = await getHistoryConversation(decrypt(botKey));
       if (get.data === undefined) {
         return null;
       } else {

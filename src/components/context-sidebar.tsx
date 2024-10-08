@@ -42,6 +42,7 @@ ContentLayoutProps) => {
   // remove conversation
 
   const { toast } = useToast();
+
   const handleRemove = async () => {
     if (!botActive) return null;
     if (apiKey) {
@@ -58,9 +59,7 @@ ContentLayoutProps) => {
         return item.key !== apiKey;
       });
       setListBot(data);
-      // console.log("bot dang dung la", botActive);
       refreshList(botActive.key, botActive.type);
-      // window.location.reload();
       toast({ description: "Danh sách AI đã được cập nhật!!" });
     } else {
       const cId = chatId?.replace("/dashboard/", "");
@@ -68,10 +67,6 @@ ContentLayoutProps) => {
       console.log(action);
     }
   };
-  // nhận biết lúc nào đổi bot đang dùng
-  // useEffect(() => {
-  //   console.log(isUpdate);
-  // }, [isUpdate1]);
   useEffect(() => {
     localStorage.setItem("apiKey", JSON.stringify(listBot));
   }, [listBot]);

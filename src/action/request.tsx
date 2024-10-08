@@ -1,6 +1,5 @@
 "use server";
 
-import { get } from "https";
 import { ReactNode } from "react";
 
 export interface Message {
@@ -99,7 +98,7 @@ export const isValidKeyChatBot = async (key: string) => {
         query: "alo",
         response_mode: "blocking",
         conversation_id: "",
-        user: "test"
+        user: "checkkey"
       })
     });
     const data = await res.json();
@@ -125,7 +124,7 @@ export const isValidKeyAgent = async (key: string) => {
           response_mode: "streaming",
           api_key: "app-tFDgSUm47hDScSPq6psnBz2q",
           conversation_id: "",
-          user: "abc-123"
+          user: "checkkey"
         })
       }
     );

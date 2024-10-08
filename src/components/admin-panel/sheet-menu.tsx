@@ -25,7 +25,7 @@ export function SheetMenu() {
         </Button>
       </SheetTrigger>
       <SheetContent
-        className="sm:w-72 px-3 h-full flex flex-col bg-[#1e0c31] border-none"
+        className="sm:w-72 px-3 h-full flex flex-col bg-[#1e0c31] border-none [&>button]:hidden"
         side="left"
       >
         <SheetHeader>

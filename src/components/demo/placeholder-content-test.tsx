@@ -19,6 +19,8 @@ import { MessSkeleton } from "../message-skeleton";
 import { initialStart } from "@/action/initial";
 import { useToast } from "@/hooks/use-toast";
 import MarkDownContent from "react-markdown";
+import { decrypt } from "@/lib/secretKey";
+import PrePrompts from "../pre-promt";
 
 type Props = {
   id?: string;
@@ -60,28 +62,13 @@ export default function PlaceholderContent1({ id }: Props) {
     if (!activeBot) return null;
     setIsTyping(true);
     if (input === "") return;
+
     e.preventDefault();
     const image = isUpload && (await uploadImageToServer());
     setIsUpload(false);
 
     // const isFirstChat = !chatId;
     let result: any;
-    // if (isFirstChat) {
-    //   result =
-    //     file !== null
-    //       ? activeBot.type === "Chatbot"
-    //         ? await sendMessageWithPicture(
-    //             input,
-    //             chatId,
-    //             activeBot.key,
-    //             image.id
-    //           )
-    //         : await sendImageToAgentV2(input, chatId, activeBot.key, image.id)
-    //       : activeBot.type === "Chatbot"
-    //       ? await sendMessage(input, chatId, activeBot.key)
-    //       : await sendMessageToAgentV2(input, chatId, activeBot.key);
-    // }
-    // Lấy tin nhắn người dùng
     if (file === null) {
       setMessages((prev) => [
         ...prev,
@@ -101,16 +88,24 @@ export default function PlaceholderContent1({ id }: Props) {
       ]);
     }
     setInput("");
-    // if (!isFirstChat) {
     result =
       file !== null
         ? activeBot.type === "Chatbot"
-          ? await sendMessageWithPicture(input, chatId, activeBot.key, image.id)
-          : await sendImageToAgentV2(input, chatId, activeBot.key, image.id)
+          ? await sendMessageWithPicture(
+              input,
+              chatId,
+              decrypt(activeBot.key),
+              image.id
+            )
+          : await sendImageToAgentV2(
+              input,
+              chatId,
+              decrypt(activeBot.key),
+              image.id
+            )
         : activeBot.type === "Chatbot"
-        ? await sendMessage(input, chatId, activeBot.key)
-        : await sendMessageToAgentV2(input, chatId, activeBot.key);
-    // }
+        ? await sendMessage(input, chatId, decrypt(activeBot.key))
+        : await sendMessageToAgentV2(input, chatId, decrypt(activeBot.key));
     setChatId(result.conversation_id);
     setFile(null);
     setFilePreview("");
@@ -128,7 +123,7 @@ export default function PlaceholderContent1({ id }: Props) {
     // TODO: handle error
     if (!activeBot) return null;
     if (chatId !== "" && activeBot.key !== "") {
-      const history = await getHistoryChat(chatId, activeBot.key);
+      const history = await getHistoryChat(chatId, decrypt(activeBot.key));
       if (!history.data) {
         toast({ description: "trang không hợp lệ vui lòng quay về trang chủ" });
         return null;
@@ -166,7 +161,7 @@ export default function PlaceholderContent1({ id }: Props) {
       const res = await fetch("https://api.chatx.vn/v1/files/upload", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${activeBot.key}`
+          Authorization: `Bearer ${decrypt(activeBot.key)}`
         },
         body: formData
       });
@@ -176,7 +171,6 @@ export default function PlaceholderContent1({ id }: Props) {
       throw new Error("Can not upload file");
     }
   };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0]);
@@ -236,11 +230,15 @@ export default function PlaceholderContent1({ id }: Props) {
     inputMessageRef.current.focus();
   }, [isTyping]);
   return (
-    <div className="group w-full overflow-auto ">
+    <div className="group w-full overflow-auto">
       {messages.length <= 0 ? (
         pathname === "/dashboard" ? (
           // <AboutCard />
-          ""
+          <PrePrompts
+            setInput={setInput}
+            // @ts-ignore
+            handleSubmit={handleSubmit}
+          />
         ) : (
           <Loading />
         )
@@ -258,11 +256,11 @@ export default function PlaceholderContent1({ id }: Props) {
                   message.role === "user" ? "flex-row-reverse" : "flex-row"
                 } items-start max-w-[90%]`}
               >
-                <div className="flex-shrink-0 mt-1">
+                <div className="flex-shrink-0 ">
                   <Image
                     src={
                       message.role === "user"
-                        ? "/minion.webp"
+                        ? "/avataruser.png"
                         : "/chatxavatar.png"
                     }
                     alt={`${
@@ -341,7 +339,7 @@ export default function PlaceholderContent1({ id }: Props) {
         className={cn(
           // "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
           // sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
-          "inset-x-0 z-50 lg:mb-[30px] mg-0 lg:bottom-3.5 bottom-8 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 mx-3"
+          "inset-x-0 z-50 lg:mb-[30px] mg-0 lg:bottom-3.5 bottom-3.5 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 mx-3"
         )}
       >
         <div className="w-full  max-w-xl mx-auto ">

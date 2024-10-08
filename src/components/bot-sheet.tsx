@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "./ui/select";
+import { decrypt, encrypt } from "@/lib/secretKey";
 type Props = {
   isOpen: boolean | undefined;
   refreshList?: any;
@@ -78,7 +79,7 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
     const oldKey = localStorage.getItem("apiKey");
     if (oldKey) {
       const check = JSON.parse(oldKey).findIndex((item: any) => {
-        return item.key === key;
+        return decrypt(item.key) === key;
       });
       return check === -1 ? false : true;
     }
@@ -88,7 +89,12 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
     if (localData) {
       const existData: [] = JSON.parse(localData);
       // @ts-ignore
-      existData.push({ name: inputName, key: inputKey, type: botType });
+      existData.push({
+        name: inputName,
+        // test
+        key: encrypt(inputKey),
+        type: botType
+      });
 
       localStorage.setItem("apiKey", JSON.stringify(existData));
 
@@ -100,7 +106,10 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
     } else {
       localStorage.setItem(
         "apiKey",
-        JSON.stringify([{ name: inputName, key: inputKey, type: botType }])
+        JSON.stringify([
+          // test
+          { name: inputName, key: encrypt(inputKey), type: botType }
+        ])
       );
     }
   };
@@ -181,7 +190,7 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
               Loại Bot:
             </Label>
             <Select onValueChange={setBotType}>
-              <SelectTrigger className="w-[250px]">
+              <SelectTrigger className="w-40">
                 <SelectValue placeholder="Select bot type" />
               </SelectTrigger>
               <SelectContent>

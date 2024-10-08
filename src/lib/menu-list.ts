@@ -4,6 +4,7 @@ import useLocalStorage from "@/hooks/use-localstorage";
 import { Tag, LayoutGrid, LucideIcon, HistoryIcon, List } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { decrypt } from "./secretKey";
 
 type Submenu = {
   href: string;
@@ -44,7 +45,7 @@ export function getMenuList(pathname: string): Group[] {
 
   const getHistory = async () => {
     if (!activeBot) return null;
-    const get = await getHistoryConversation(activeBot.key);
+    const get = await getHistoryConversation(decrypt(activeBot.key));
     if (get.data === undefined) {
       return null;
     } else {
@@ -68,6 +69,7 @@ export function getMenuList(pathname: string): Group[] {
         "activeBot",
         JSON.stringify({ key: key, type: tag })
       );
+      // setActiveBotLocal(key, tag);
       setIsRefresh(!isRefresh);
     } else {
       return null;
@@ -152,33 +154,7 @@ export function getMenuList(pathname: string): Group[] {
             }))
           ]
         }
-        // {
-        //   href: "/tags",
-        //   label: "Tags",
-        //   active: pathname.includes("/tags"),
-        //   icon: Tag,
-        //   submenus: []
-        // }
       ]
     }
-    // {
-    //   groupLabel: "Settings",
-    //   menus: [
-    //     {
-    //       href: "/users",
-    //       label: "Users",
-    //       active: pathname.includes("/users"),
-    //       icon: Users,
-    //       submenus: []
-    //     },
-    //     {
-    //       href: "",
-    //       label: "Add bot",
-    //       active: pathname.includes("/account"),
-    //       icon: PlusIcon,
-    //       submenus: []
-    //     }
-    //   ]
-    // }
   ];
 }

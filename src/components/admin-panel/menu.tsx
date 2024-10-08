@@ -64,10 +64,6 @@ export function Menu({ isOpen }: MenuProps) {
                             <Button
                               variant={active ? "active" : "sideBtn"}
                               className="w-full flex justify-start h-10 "
-                              // onClick={() => {
-                              //   // @ts-ignore
-                              //   window.location.replace(href);
-                              // }}
                               asChild
                             >
                               <Link href={href} scroll={false}>
