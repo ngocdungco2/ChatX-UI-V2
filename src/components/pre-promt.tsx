@@ -45,6 +45,7 @@ export default function PrePrompts({ setInput, handleSubmit }: Props) {
         width={0}
         height={0}
         className="w-[150px] h-auto opacity-80 lg:block hidden"
+        priority={true}
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
         {prePrompts.map((prompt, index) => (

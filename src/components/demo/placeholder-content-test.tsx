@@ -21,7 +21,8 @@ import { useToast } from "@/hooks/use-toast";
 import MarkDownContent from "react-markdown";
 import { decrypt } from "@/lib/secretKey";
 import PrePrompts from "../pre-promt";
-
+import TextStreaming from "../text-streaming";
+import { Subscription } from "rxjs";
 type Props = {
   id?: string;
 };
@@ -55,6 +56,7 @@ export default function PlaceholderContent1({ id }: Props) {
   // luu hinh file de preview
   const [filePreview, setFilePreview] = useState("");
   const [isUpload, setIsUpload] = useState(false);
+  const [latestMessage, setLatestMessage] = useState("");
   const router = useRouter();
   const { toast } = useToast();
 
@@ -66,7 +68,6 @@ export default function PlaceholderContent1({ id }: Props) {
     e.preventDefault();
     const image = isUpload && (await uploadImageToServer());
     setIsUpload(false);
-
     // const isFirstChat = !chatId;
     let result: any;
     if (file === null) {
@@ -117,6 +118,7 @@ export default function PlaceholderContent1({ id }: Props) {
         content: result.answer
       }
     ]);
+    setLatestMessage(result.answer);
     setIsTyping(false);
   };
   const getPrevChat = async () => {
@@ -278,11 +280,16 @@ export default function PlaceholderContent1({ id }: Props) {
                 >
                   {!checkIsHtml(message.content) ? (
                     <>
-                      <MarkDownContent
-                        className={`font-roboto text-left w-full whitespace-pre-wrap`}
-                      >
-                        {message.content as string}
-                      </MarkDownContent>
+                      {message.role === "assistant" &&
+                      message.content === latestMessage ? (
+                        <TextStreaming text={message.content} />
+                      ) : (
+                        <MarkDownContent
+                          className={`font-roboto text-left w-full whitespace-pre-wrap`}
+                        >
+                          {message.content as string}
+                        </MarkDownContent>
+                      )}
                       {message.fileUrl && message.role === "user" && (
                         <img
                           src={message.fileUrl}
