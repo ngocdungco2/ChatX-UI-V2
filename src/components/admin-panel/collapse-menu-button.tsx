@@ -175,19 +175,9 @@ CollapseMenuButtonProps) {
                           : "-translate-x-96 opacity-0"
                       )}
                     >
-                      {label}
+                      {String(label).charAt(0).toUpperCase() +
+                        String(label).slice(1)}
                     </p>
-                    {/* <span className="ml-2 flex justify-center items-center">
-                  {key && (
-                    <Image
-                      src={"/nextwhite.svg"}
-                      alt="iconnext"
-                      width={18}
-                      height={18}
-                      className="w-auto h-auto mr-1"
-                    />
-                  )}
-                </span> */}
                   </Link>
                 </Button>
               </ContextMenuSidebar>

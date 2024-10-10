@@ -39,7 +39,7 @@ const TextStreaming = ({ text }: Props) => {
         clearInterval(intervalId);
         setIsComplete(true);
       }
-    }, 30);
+    }, 25);
 
     return () => clearInterval(intervalId);
   }, [30]);

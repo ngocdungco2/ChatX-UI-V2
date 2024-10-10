@@ -22,7 +22,7 @@ import MarkDownContent from "react-markdown";
 import { decrypt } from "@/lib/secretKey";
 import PrePrompts from "../pre-promt";
 import TextStreaming from "../text-streaming";
-import { Subscription } from "rxjs";
+
 type Props = {
   id?: string;
 };
@@ -207,7 +207,6 @@ export default function PlaceholderContent1({ id }: Props) {
     window.addEventListener("storage", listenStorageChange);
     return () => window.removeEventListener("storage", listenStorageChange);
   }, []);
-
   useEffect(() => {
     // TODO: remove this initial or hash apikey
     if (!activeBot) {
@@ -215,7 +214,6 @@ export default function PlaceholderContent1({ id }: Props) {
       getLocalData ? setActiveBot(JSON.parse(getLocalData)) : initialStart();
     }
   }, []);
-
   useEffect(() => {
     router.push(`/dashboard/${chatId}`, { scroll: false });
 

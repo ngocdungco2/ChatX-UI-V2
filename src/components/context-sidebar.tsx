@@ -8,7 +8,10 @@ import {
 } from "@/components/ui/context-menu";
 import useLocalStorage from "@/hooks/use-localstorage";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { list } from "postcss";
 import { use, useEffect, useState } from "react";
+import { DrawerRename } from "./drawer-rename";
 interface ContentLayoutProps {
   children: React.ReactNode;
   apiKey?: string;
@@ -35,16 +38,11 @@ ContentLayoutProps) => {
     }
   });
 
-  // chatbot have key || conversation have chatId
-  // rename bot
-  // rename conversation
-  // remove botx
-  // remove conversation
-
   const { toast } = useToast();
 
   const handleRemove = async () => {
     if (!botActive) return null;
+
     if (apiKey) {
       if (!listBot) return;
       if (apiKey === botActive.key) {
@@ -62,23 +60,31 @@ ContentLayoutProps) => {
       refreshList(botActive.key, botActive.type);
       toast({ description: "Danh sách AI đã được cập nhật!!" });
     } else {
+      if (chatId) {
+        console.log("Loading...");
+        return null;
+      }
       const cId = chatId?.replace("/dashboard/", "");
       const action = await deleteChat(cId, "abc-123", botActive.key);
       console.log(action);
     }
   };
+
   useEffect(() => {
     localStorage.setItem("apiKey", JSON.stringify(listBot));
   }, [listBot]);
   return (
-    <>
+    <div>
       <ContextMenu>
         <ContextMenuTrigger>{children}</ContextMenuTrigger>
         <ContextMenuContent>
-          {/* <ContextMenuItem onSelect={handleRename}>Rename</ContextMenuItem> */}
+          {/* @ts-ignore */}
+          {/* <DrawerRename> */}
+          {/* <ContextMenuItem>Rename</ContextMenuItem> */}
+          {/* </DrawerRename> */}
           <ContextMenuItem onSelect={handleRemove}>Remove</ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
-    </>
+    </div>
   );
 };
