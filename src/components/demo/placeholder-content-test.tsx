@@ -18,10 +18,11 @@ import { cn } from "@/lib/utils";
 import { MessSkeleton } from "../message-skeleton";
 import { initialStart } from "@/action/initial";
 import { useToast } from "@/hooks/use-toast";
-import MarkDownContent from "react-markdown";
+import { MDXEditor } from "@mdxeditor/editor";
 import { decrypt } from "@/lib/secretKey";
 import PrePrompts from "../pre-promt";
 import TextStreaming from "../text-streaming";
+import ReactMarkdown from "react-markdown";
 
 type Props = {
   id?: string;
@@ -38,7 +39,6 @@ export default function PlaceholderContent1({ id }: Props) {
     const data = localStorage.getItem("activeBot");
     return data ? JSON.parse(data) : null;
   });
-  // const [activeBot, setActiveBot] = useLocalStorage("activeBot", null);
   const fileRef = useRef<HTMLInputElement>(null);
   const submutButtonRef = useRef(null);
   const inputMessageRef = useRef(null);
@@ -118,8 +118,8 @@ export default function PlaceholderContent1({ id }: Props) {
         content: result.answer
       }
     ]);
-    setLatestMessage(result.answer);
     setIsTyping(false);
+    setLatestMessage(result.answer);
   };
   const getPrevChat = async () => {
     // TODO: handle error
@@ -130,16 +130,18 @@ export default function PlaceholderContent1({ id }: Props) {
         toast({ description: "trang không hợp lệ vui lòng quay về trang chủ" });
         return null;
       }
-      const formattedMessages = history.data.flatMap((msg: any) => [
-        msg.message_files.length > 0
-          ? {
-              role: "user",
-              content: msg.query,
-              fileUrl: msg.message_files[0].url
-            }
-          : { role: "user", content: msg.query, fileUrl: "" }, // Tin nhắn của người dùng
-        { role: "assistant", content: msg.answer, fileUrl: "" } // Tin nhắn của API
-      ]);
+      const formattedMessages = history.data.flatMap(
+        (msg: any, index: number) => [
+          msg.message_files.length > 0
+            ? {
+                role: "user",
+                content: msg.query,
+                fileUrl: msg.message_files[0].url
+              }
+            : { role: "user", content: msg.query, fileUrl: "" }, // Tin nhắn của người dùng
+          { role: "assistant", content: msg.answer, fileUrl: "" } // Tin nhắn của API
+        ]
+      );
       // Cập nhật state messages
       setMessages(formattedMessages);
     } else {
@@ -204,18 +206,29 @@ export default function PlaceholderContent1({ id }: Props) {
         setActiveBot(JSON.parse(data));
       }
     };
+    const listenClearChat = () => {
+      setMessages([]);
+      setChatId("");
+      setLatestMessage("");
+    };
     window.addEventListener("storage", listenStorageChange);
-    return () => window.removeEventListener("storage", listenStorageChange);
+    window.addEventListener("clear", listenClearChat);
+    window.addEventListener("newChat", listenClearChat);
+    return () => {
+      window.removeEventListener("storage", listenStorageChange);
+      window.removeEventListener("clear", listenClearChat);
+      window.removeEventListener("newChat", listenClearChat);
+    };
   }, []);
   useEffect(() => {
-    // TODO: remove this initial or hash apikey
+    // TODO: remove this initial
     if (!activeBot) {
       const getLocalData = localStorage.getItem("activeBot");
       getLocalData ? setActiveBot(JSON.parse(getLocalData)) : initialStart();
     }
   }, []);
   useEffect(() => {
-    router.push(`/dashboard/${chatId}`, { scroll: false });
+    // router.push(`/dashboard/${chatId}`, { scroll: false });
 
     if (chatId && messages.length === 0) {
       getPrevChat();
@@ -223,7 +236,7 @@ export default function PlaceholderContent1({ id }: Props) {
   }, [chatId]);
   useEffect(() => {
     scrollToBottom();
-    // console.log(messages);
+    console.log(messages);
   }, [messages]);
   useEffect(() => {
     // @ts-ignore
@@ -243,7 +256,7 @@ export default function PlaceholderContent1({ id }: Props) {
           <Loading />
         )
       ) : (
-        <div className="max-w-5xl mx-auto mt-10 mb-24 ">
+        <div className="max-w-2xl mx-auto mt-10 mb-24 ">
           {messages.map((message, index) => (
             <div
               key={index}
@@ -256,37 +269,59 @@ export default function PlaceholderContent1({ id }: Props) {
                   message.role === "user" ? "flex-row-reverse" : "flex-row"
                 } items-start max-w-[90%]`}
               >
-                <div className="flex-shrink-0 ">
-                  <Image
-                    src={
-                      message.role === "user"
-                        ? "/avataruser.png"
-                        : "/chatxavatar.png"
-                    }
-                    alt={`${
-                      message.role === "user" ? "User" : "Assistant"
-                    } Avatar`}
-                    width={message.role === "user" ? 40 : 35}
-                    height={message.role === "user" ? 40 : 35}
-                    className="rounded-full "
-                  />
-                </div>
+                {message.role === "assistant" && (
+                  <div className="flex-shrink-0">
+                    <Image
+                      src="/chatxavatar.png"
+                      alt="Assistant Avatar"
+                      width={35}
+                      height={35}
+                      className="rounded-full"
+                    />
+                  </div>
+                )}
                 <div
-                  className={`mx-1 p-2 px-4 rounded-xl ${
-                    message.role === "user" ? "bg-white" : "bg-white"
-                  } overflow-hidden `}
+                  className={`mx-1 p-2 px-4 rounded-3xl ${
+                    message.role === "user" ? "bg-[#f4f4f4]" : "bg-transparent"
+                  } overflow-hidden`}
                 >
                   {!checkIsHtml(message.content) ? (
                     <>
-                      {message.role === "assistant" &&
-                      message.content === latestMessage ? (
+                      {message.content === latestMessage &&
+                      index === messages.length - 1 ? (
                         <TextStreaming text={message.content} />
                       ) : (
-                        <MarkDownContent
-                          className={`font-roboto text-left w-full whitespace-pre-wrap`}
+                        <ReactMarkdown
+                          className={`font-roboto text-left w-full
+                            `}
+                          components={{
+                            h1: ({ node, ...props }) => (
+                              <h1
+                                className="text-xl font-bold mb-2"
+                                {...props}
+                              />
+                            ),
+                            p: ({ node, ...props }) => (
+                              <p className="my-1" {...props} />
+                            ),
+                            a: ({ node, ...props }) => (
+                              <a
+                                className="text-blue-600 hover:underline"
+                                {...props}
+                              />
+                            ),
+                            img: ({ node, ...props }) => (
+                              <div className="my-2">
+                                <img
+                                  className="w-full h-auto object-cover rounded-3xl"
+                                  {...props}
+                                />
+                              </div>
+                            )
+                          }}
                         >
                           {message.content as string}
-                        </MarkDownContent>
+                        </ReactMarkdown>
                       )}
                       {message.fileUrl && message.role === "user" && (
                         <img
@@ -294,14 +329,15 @@ export default function PlaceholderContent1({ id }: Props) {
                           alt=""
                           height={150}
                           width={150}
+                          className="rounded-2xl pt-[10px]"
                         />
                       )}
                     </>
                   ) : (
-                    <div className="w-full h-full flex flex-grow justify-center items-center ">
+                    <div className="w-full h-full flex flex-grow justify-center items-center">
                       <iframe
                         srcDoc={message.content}
-                        className="w-[600px] h-[450px] border-none flex justify-center items-centers"
+                        className="w-[600px] h-[450px] border-none flex justify-center items-center"
                         sandbox="allow-scripts"
                       />
                     </div>
@@ -309,26 +345,32 @@ export default function PlaceholderContent1({ id }: Props) {
 
                   {message.role === "assistant" && (
                     <Button
-                      className="p-0 my-0 h-2 mt-3"
+                      className="p-0 my-0 h-2 mt-4"
                       variant={"noOutline"}
                       onClick={() => handleCopy(index, message.content)}
                     >
                       {isCopy?.check && isCopy.index === index ? (
-                        <Image
-                          src="/copied.svg"
-                          alt="st"
-                          width={15}
-                          height={15}
-                          className="w-[15px] h-[15px] m-0 p-0"
-                        />
+                        <div className="w-20 h-8 bg-white rounded-full flex items-center justify-evenly p-1 opacity-80">
+                          <Image
+                            src="/copied.svg"
+                            alt="Copied"
+                            width={15}
+                            height={15}
+                            className="w-[15px] h-[15px] m-0 p-0 opacity-50"
+                          />
+                          <p className="opacity-50">Copied</p>
+                        </div>
                       ) : (
-                        <Image
-                          src="/copyI.svg"
-                          alt="st"
-                          width={15}
-                          height={15}
-                          className="w-[15px] h-[15px] m-0 p-0"
-                        />
+                        <div className="w-20 h-8 bg-white rounded-full flex items-center justify-evenly p-1 opacity-80">
+                          <Image
+                            src="/copyI.svg"
+                            alt="Copy"
+                            width={15}
+                            height={15}
+                            className="w-[15px] h-[15px] m-0 p-0 opacity-50"
+                          />
+                          <p className="opacity-50">Copy</p>
+                        </div>
                       )}
                     </Button>
                   )}
@@ -344,11 +386,16 @@ export default function PlaceholderContent1({ id }: Props) {
         className={cn(
           // "inset-x-0 z-50 mb-[30px] lg:bottom-3.5 bottom-10 fixed transition-[margin-left] ease-in-out duration-300 rounded-full ",
           // sidebar?.isOpen ? "lg:ml-72 ml-0" : "lg:ml-24 ml-0"
-          "inset-x-0 z-50 lg:mb-[30px] mg-0 lg:bottom-3.5 bottom-3.5 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-72 mx-3"
+          "inset-x-0 z-50 lg:mb-[30px] mg-0 lg:bottom-3.5 bottom-3.5 fixed transition-[margin-left] ease-in-out duration-300 rounded-full lg:ml-[150px] mx-3 "
         )}
       >
         <div className="w-full  max-w-xl mx-auto ">
-          <Card className="p-2  border-none rounded-2xl transition-[height] delay-100 ease-linear">
+          <Card
+            className={cn(
+              "p-2 border-none transition-[height] delay-100 ease-linear bg-[#f4f4f4] shadow-none lg:w-[650px]",
+              isUpload ? "rounded-3xl" : "rounded-full"
+            )}
+          >
             <form onSubmit={handleSubmit}>
               <div
                 className={cn(
@@ -359,7 +406,7 @@ export default function PlaceholderContent1({ id }: Props) {
                 <img
                   src={filePreview}
                   alt="123"
-                  className="w-20 h-20 hover:cursor-pointer"
+                  className="w-20 h-20 hover:cursor-pointer rounded-xl"
                   onClick={() => {
                     setFile(null);
                     setIsUpload(false);
@@ -367,7 +414,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   }}
                 />
               </div>
-              <div className="flex justify-center items-center">
+              <div className="flex justify-center items-center ">
                 <Input
                   type="file"
                   className="hidden"
@@ -395,7 +442,7 @@ export default function PlaceholderContent1({ id }: Props) {
                   onChange={(event) => {
                     setInput(event.target.value);
                   }}
-                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto shadow-none h-8 resize-none overflow-y-scrollbar no-scrollbar flex justify-center text-base"
+                  className="w-[95%] mr-2 border-0 ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:ring-0 ring-0 focus-visible:border-none focus:border-transparent focus-visible:ring-none mx-auto shadow-none h-8 resize-none overflow-y-scrollbar no-scrollbar flex justify-center text-base "
                   placeholder="Hỏi tôi bất cứ điều gì?"
                   disabled={isTyping}
                   ref={inputMessageRef}

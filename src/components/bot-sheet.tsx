@@ -33,7 +33,6 @@ type Props = {
   refreshList?: any;
   botActive?: any;
 };
-// TODO: hash key
 
 export function SheetBot({ isOpen, refreshList, botActive }: Props) {
   const [inputName, setInputName] = useState("");

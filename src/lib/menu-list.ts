@@ -1,8 +1,6 @@
-import { initialStart } from "@/action/initial";
 import { getHistoryConversation } from "@/action/request";
-import useLocalStorage from "@/hooks/use-localstorage";
-import { Tag, LayoutGrid, LucideIcon, HistoryIcon, List } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { LayoutGrid, LucideIcon, HistoryIcon, List } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { decrypt } from "./secretKey";
 
@@ -62,7 +60,7 @@ export function getMenuList(pathname: string): Group[] {
       setListBot(JSON.parse(data));
     }
   };
-
+  const path = usePathname();
   const setActiveKey = (key: string | undefined, tag: string) => {
     if (key) {
       localStorage.setItem(
@@ -71,6 +69,7 @@ export function getMenuList(pathname: string): Group[] {
       );
       // setActiveBotLocal(key, tag);
       setIsRefresh(!isRefresh);
+      path.endsWith("/dashboard") && window.dispatchEvent(new Event("clear"));
     } else {
       return null;
     }

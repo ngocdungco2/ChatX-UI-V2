@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@bytescale/upload-widget": "^4.27.0",
+    "@mdxeditor/editor": "^3.14.0",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-context-menu": "^2.2.1",

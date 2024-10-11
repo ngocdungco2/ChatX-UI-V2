@@ -139,7 +139,6 @@ CollapseMenuButtonProps) {
                     if (tag) {
                       setActiveKey(key, tag);
                       window.dispatchEvent(new Event("storage"));
-                      // window.location.replace(`/dashboard`);
                     }
                   }}
                   asChild

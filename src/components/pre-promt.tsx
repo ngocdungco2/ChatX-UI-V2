@@ -38,7 +38,7 @@ export default function PrePrompts({ setInput, handleSubmit }: Props) {
   };
 
   return (
-    <div className="inset-0 flex flex-col items-center justify-center h-dvh absolute lg:left-[15%] left-[5%]">
+    <div className="inset-0 flex flex-col items-center justify-center h-dvh absolute lg:left-[10%] left-[5%]">
       <Image
         src={"/logopurple.svg"}
         alt="logo"

@@ -66,7 +66,13 @@ export function Menu({ isOpen }: MenuProps) {
                               className="w-full flex justify-start h-10 "
                               asChild
                             >
-                              <Link href={href} scroll={false}>
+                              <Link
+                                href={href}
+                                scroll={false}
+                                onClick={() =>
+                                  window.dispatchEvent(new Event("newChat"))
+                                }
+                              >
                                 <span
                                   className={cn(isOpen === false ? "" : "mr-4")}
                                 >
