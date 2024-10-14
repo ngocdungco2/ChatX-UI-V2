@@ -236,7 +236,6 @@ export default function PlaceholderContent1({ id }: Props) {
   }, [chatId]);
   useEffect(() => {
     scrollToBottom();
-    console.log(messages);
   }, [messages]);
   useEffect(() => {
     // @ts-ignore
@@ -292,8 +291,9 @@ export default function PlaceholderContent1({ id }: Props) {
                         <TextStreaming text={message.content} />
                       ) : (
                         <ReactMarkdown
-                          className={`font-roboto text-left w-full
+                          className={`font-roboto text-left w-full 
                             `}
+                          children={message.content}
                           components={{
                             h1: ({ node, ...props }) => (
                               <h1
@@ -319,9 +319,7 @@ export default function PlaceholderContent1({ id }: Props) {
                               </div>
                             )
                           }}
-                        >
-                          {message.content as string}
-                        </ReactMarkdown>
+                        />
                       )}
                       {message.fileUrl && message.role === "user" && (
                         <img

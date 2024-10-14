@@ -46,7 +46,7 @@ const TextStreaming = ({ text }: Props) => {
 
   return (
     <div>
-      <ReactMarkdown className="font-roboto text-left w-full whitespace-pre-wrap">
+      <ReactMarkdown className="font-roboto text-left w-full">
         {displayedText as string}
       </ReactMarkdown>
     </div>
