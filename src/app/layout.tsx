@@ -14,7 +14,6 @@ export const metadata: Metadata = {
   ),
   title: "ChatX"
 };
-
 export default function RootLayout({
   children
 }: Readonly<{
@@ -27,7 +26,7 @@ export default function RootLayout({
       className="overflow-y-scroll no-scrollbar overscroll-none"
     >
       <link rel="icon" href="/logo.png" type="image/x-icon" />
-      <body className=" shadow-none border-none ">
+      <body className={` shadow-none border-none`}>
         {/* <ThemeProvider attribute="class" defaultTheme="light" enableSystem> */}
         {children}
         {/* <Loading /> */}

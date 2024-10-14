@@ -12,10 +12,10 @@ export const MessSkeleton = () => {
         height={35}
       />
       <div className="space-y-2 flex-1">
-        <Skeleton className="h-4 w-[80%]" /> {/* First line of text */}
-        <Skeleton className="h-4 w-[75%]" /> {/* Second line of text */}
+        <Skeleton className="h-4 w-[90%]" /> {/* First line of text */}
+        <Skeleton className="h-4 w-[85%]" /> {/* Second line of text */}
+        <Skeleton className="h-4 w-[75%]" /> {/* Third line of text */}
         <Skeleton className="h-4 w-[65%]" /> {/* Third line of text */}
-        <Skeleton className="h-4 w-[55%]" /> {/* Third line of text */}
       </div>
     </div>
   );

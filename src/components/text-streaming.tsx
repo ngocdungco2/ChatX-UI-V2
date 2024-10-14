@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
+import { MarkdownContent } from "./markdown-content";
 
 type Props = {
   text: any;
@@ -46,9 +47,7 @@ const TextStreaming = ({ text }: Props) => {
 
   return (
     <div>
-      <ReactMarkdown className="font-roboto text-left w-full">
-        {displayedText as string}
-      </ReactMarkdown>
+      <MarkdownContent>{displayedText}</MarkdownContent>
     </div>
   );
 };

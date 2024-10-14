@@ -4,7 +4,6 @@ interface ContentLayoutProps {
   title: any;
   children: React.ReactNode;
 }
-
 export function ContentLayout({ title, children }: ContentLayoutProps) {
   return (
     <div>

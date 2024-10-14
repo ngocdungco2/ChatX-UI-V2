@@ -22,7 +22,7 @@ export default function AdminPanelLayout({
         <main
           // border-[#1e0c31] border-[10px] border-b-0
           className={cn(
-            "lg:h-[calc(97dvh_-_theme(spacing.16))] h-[92dvh] transition-[margin-left] ease-in-out duration-300 overflow-auto  lg:rounded-t-3xl  lg:mr-3.5 overflow-y-scroll no-scrollbar ",
+            "lg:h-[calc(97dvh_-_theme(spacing.16))] h-[92dvh] transition-[margin-left] ease-in-out duration-300 overflow-auto lg:rounded-t-3xl  lg:mr-3.5 overflow-y-scroll no-scrollbar",
             //lg:mt-3.5
             // @ts-ignore
             sidebar?.isOpen === false ? "lg:ml-[90px]" : "lg:ml-[260px] "

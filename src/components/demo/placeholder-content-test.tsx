@@ -23,6 +23,7 @@ import { decrypt } from "@/lib/secretKey";
 import PrePrompts from "../pre-promt";
 import TextStreaming from "../text-streaming";
 import ReactMarkdown from "react-markdown";
+import { MarkdownContent } from "../markdown-content";
 
 type Props = {
   id?: string;
@@ -290,36 +291,7 @@ export default function PlaceholderContent1({ id }: Props) {
                       index === messages.length - 1 ? (
                         <TextStreaming text={message.content} />
                       ) : (
-                        <ReactMarkdown
-                          className={`font-roboto text-left w-full 
-                            `}
-                          children={message.content}
-                          components={{
-                            h1: ({ node, ...props }) => (
-                              <h1
-                                className="text-xl font-bold mb-2"
-                                {...props}
-                              />
-                            ),
-                            p: ({ node, ...props }) => (
-                              <p className="my-1" {...props} />
-                            ),
-                            a: ({ node, ...props }) => (
-                              <a
-                                className="text-blue-600 hover:underline"
-                                {...props}
-                              />
-                            ),
-                            img: ({ node, ...props }) => (
-                              <div className="my-2">
-                                <img
-                                  className="w-full h-auto object-cover rounded-3xl"
-                                  {...props}
-                                />
-                              </div>
-                            )
-                          }}
-                        />
+                        <MarkdownContent>{message.content}</MarkdownContent>
                       )}
                       {message.fileUrl && message.role === "user" && (
                         <img
@@ -327,7 +299,7 @@ export default function PlaceholderContent1({ id }: Props) {
                           alt=""
                           height={150}
                           width={150}
-                          className="rounded-2xl pt-[10px]"
+                          className="rounded-3xl pt-[10px]"
                         />
                       )}
                     </>
@@ -397,7 +369,7 @@ export default function PlaceholderContent1({ id }: Props) {
             <form onSubmit={handleSubmit}>
               <div
                 className={cn(
-                  " w-20 h-20  ml-4  mb-2 border-none shadow-none ",
+                  " w-20 h-20  ml-4  mb-2 border-none shadow-none",
                   !isUpload && "hidden"
                 )}
               >
