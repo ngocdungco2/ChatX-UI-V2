@@ -270,7 +270,7 @@ export default function PlaceholderContent1({ id }: Props) {
                 } items-start max-w-[90%]`}
               >
                 {message.role === "assistant" && (
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0 mt-4">
                     <Image
                       src="/chatxavatar.png"
                       alt="Assistant Avatar"

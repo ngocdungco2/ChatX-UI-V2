@@ -29,7 +29,7 @@ import {
 } from "./ui/select";
 import { decrypt, encrypt } from "@/lib/secretKey";
 type Props = {
-  isOpen: boolean | undefined;
+  isOpen?: boolean | undefined;
   refreshList?: any;
   botActive?: any;
 };
@@ -64,6 +64,7 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
         });
         addToLocal();
         refreshList(botActive.key, botActive.type);
+
         // window.location.reload();
       } else {
         setIsValid(false);
