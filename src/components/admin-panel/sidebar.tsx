@@ -1,16 +1,16 @@
-import Link from "next/link";
+import Link from "next/link"
 
-import { cn } from "@/lib/utils";
-import { useStore } from "@/hooks/use-store";
-import { Button } from "@/components/ui/button";
-import { Menu } from "@/components/admin-panel/menu";
-import { useSidebarToggle } from "@/hooks/use-sidebar-toggle";
-import Image from "next/image";
+import { cn } from "@/lib/utils"
+import { useStore } from "@/hooks/use-store"
+import { Button } from "@/components/ui/button"
+import { Menu } from "@/components/admin-panel/menu"
+import { useSidebarToggle } from "@/hooks/use-sidebar-toggle"
+import Image from "next/image"
 
 export function Sidebar() {
-  const sidebar = useStore(useSidebarToggle, (state) => state);
+  const sidebar = useStore(useSidebarToggle, (state) => state)
 
-  if (!sidebar) return null;
+  if (!sidebar) return null
 
   return (
     <aside
@@ -39,6 +39,7 @@ export function Sidebar() {
                 className="mx-1"
               />
             )}
+
             <h1
               className={cn(
                 "font-bold text-2xl whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300 flex",
@@ -50,11 +51,11 @@ export function Sidebar() {
               {/* Chat */}
 
               <Image
-                src="/logwhite.svg"
+                src="/logoSite.png"
                 alt="logo"
                 height={40}
-                width={140}
-                className="mt-5 w-[150px] h-auto"
+                width={120}
+                className="mt-5 w-[60px] h-auto"
                 priority={true}
               />
             </h1>
@@ -63,5 +64,5 @@ export function Sidebar() {
         <Menu isOpen={sidebar?.isOpen} />
       </div>
     </aside>
-  );
+  )
 }

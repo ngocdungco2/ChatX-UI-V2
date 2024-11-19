@@ -1,4 +1,4 @@
-import { decrypt, encrypt } from "@/lib/secretKey";
+import { decrypt, encrypt } from "@/lib/secretKey"
 
 export const initialStart = () => {
   // apikey list
@@ -7,38 +7,38 @@ export const initialStart = () => {
       "apiKey",
       JSON.stringify([
         {
-          name: "ChatX support",
-          key: encrypt("app-qQppSgsAKdKQ2nw8NRE6xXAs"),
+          name: "LegalZone",
+          key: encrypt("app-H3hry4Y8PO6WQKs0VxZKJerq"),
           type: "Agent"
         }
       ])
-    );
+    )
   }
   // activeBot
   if (localStorage.getItem("activeBot") === null) {
     localStorage.setItem(
       "activeBot",
       JSON.stringify({
-        key: encrypt("app-qQppSgsAKdKQ2nw8NRE6xXAs"),
+        key: encrypt("app-H3hry4Y8PO6WQKs0VxZKJerq"),
         type: "Agent"
       })
-    );
+    )
   }
-};
+}
 
 export const isApikeyHash = () => {
-  const activeBot = localStorage.getItem("activeBot");
-  const apiKey = localStorage.getItem("apiKey");
+  const activeBot = localStorage.getItem("activeBot")
+  const apiKey = localStorage.getItem("apiKey")
 
   if (!activeBot && !apiKey) {
-    initialStart();
+    initialStart()
   }
   if (activeBot && apiKey) {
-    const activeBot1 = JSON.parse(activeBot);
-    const apiKey1 = JSON.parse(apiKey);
+    const activeBot1 = JSON.parse(activeBot)
+    const apiKey1 = JSON.parse(apiKey)
 
     if (activeBot1.key.startWith("app")) {
-      initialStart();
+      initialStart()
     }
   }
-};
+}

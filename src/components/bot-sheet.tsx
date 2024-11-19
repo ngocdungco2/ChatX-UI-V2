@@ -1,8 +1,8 @@
-"use client";
-import { isValidKeyAgent, isValidKeyChatBot } from "@/action/request";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+"use client"
+import { isValidKeyAgent, isValidKeyChatBot } from "@/action/request"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Sheet,
   SheetClose,
@@ -12,12 +12,12 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger
-} from "@/components/ui/sheet";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-import { PlusIcon } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+} from "@/components/ui/sheet"
+import { useToast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
+import { PlusIcon } from "lucide-react"
+import Image from "next/image"
+import { useEffect, useState } from "react"
 import {
   Select,
   SelectContent,
@@ -26,83 +26,83 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue
-} from "./ui/select";
-import { decrypt, encrypt } from "@/lib/secretKey";
+} from "./ui/select"
+import { decrypt, encrypt } from "@/lib/secretKey"
 type Props = {
-  isOpen?: boolean | undefined;
-  refreshList?: any;
-  botActive?: any;
-};
+  isOpen?: boolean | undefined
+  refreshList?: any
+  botActive?: any
+}
 
 export function SheetBot({ isOpen, refreshList, botActive }: Props) {
-  const [inputName, setInputName] = useState("");
-  const [inputKey, setInputKey] = useState("");
+  const [inputName, setInputName] = useState("")
+  const [inputKey, setInputKey] = useState("")
   const [apiKeyData, setApiKeyData] = useState<{ name: string; key: string }[]>(
     []
-  );
-  const [isValid, setIsValid] = useState(false);
-  const [botType, setBotType] = useState("");
-  const { toast } = useToast();
+  )
+  const [isValid, setIsValid] = useState(false)
+  const [botType, setBotType] = useState("")
+  const { toast } = useToast()
 
   const handleClick = async () => {
     const check =
       botType === "Chatbot"
         ? await isValidKeyChatBot(inputKey)
-        : await isValidKeyAgent(inputKey);
+        : await isValidKeyAgent(inputKey)
     if (!check) {
-      setIsValid(false);
+      setIsValid(false)
       toast({
         variant: "destructive",
         description: "Key bạn vừa nhập không hợp lệ hãy kiểm tra lại"
-      });
+      })
     } else {
       if (isDuplicate(inputKey) === false) {
-        setIsValid(true);
+        setIsValid(true)
         toast({
           variant: "default",
           description: "Key hợp lệ AI đã được thêm vào danh sách"
-        });
-        addToLocal();
-        refreshList(botActive.key, botActive.type);
+        })
+        addToLocal()
+        refreshList(botActive.key, botActive.type)
 
         // window.location.reload();
       } else {
-        setIsValid(false);
+        setIsValid(false)
         toast({
           variant: "destructive",
           description: "Key đã tồn tại trong danh sách AI vui lòng kiểm tra lại"
-        });
+        })
       }
     }
-  };
+  }
   const isDuplicate = (key: string) => {
-    const oldKey = localStorage.getItem("apiKey");
+    const oldKey = localStorage.getItem("apiKey")
     if (oldKey) {
       const check = JSON.parse(oldKey).findIndex((item: any) => {
-        return decrypt(item.key) === key;
-      });
-      return check === -1 ? false : true;
+        return decrypt(item.key) === key
+      })
+      return check === -1 ? false : true
     }
-  };
+  }
   const addToLocal = () => {
-    const localData = localStorage.getItem("apiKey");
+    const localData = localStorage.getItem("apiKey")
     if (localData) {
-      const existData: [] = JSON.parse(localData);
+      const existData: [] = JSON.parse(localData)
       // @ts-ignore
       existData.push({
         name: inputName,
         // test
         key: encrypt(inputKey),
         type: botType
-      });
+      })
 
-      localStorage.setItem("apiKey", JSON.stringify(existData));
+      localStorage.setItem("apiKey", JSON.stringify(existData))
 
       const newState = existData.flatMap((item) => [
         // @ts-ignore
         { name: item.name, key: item.key, type: item.type }
-      ]);
-      setApiKeyData(newState);
+      ])
+      setApiKeyData(newState)
     } else {
       localStorage.setItem(
         "apiKey",
@@ -110,22 +110,22 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
           // test
           { name: inputName, key: encrypt(inputKey), type: botType }
         ])
-      );
+      )
     }
-  };
+  }
   const refreshValue = () => {
-    setInputKey("");
-    setInputName("");
-    setIsValid(false);
-    setBotType("");
-  };
+    setInputKey("")
+    setInputName("")
+    setIsValid(false)
+    setBotType("")
+  }
 
   useEffect(() => {
-    const localData = localStorage.getItem("apiKey");
+    const localData = localStorage.getItem("apiKey")
     localData
       ? setApiKeyData(JSON.parse(localData))
-      : console.log("No api key exist");
-  }, []);
+      : console.log("No api key exist")
+  }, [])
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -170,7 +170,7 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
             <Input
               className="col-span-3"
               onChange={(e) => {
-                setInputName(e.target.value);
+                setInputName(e.target.value)
               }}
             />
           </div>
@@ -181,7 +181,7 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
             <Input
               className="col-span-3 "
               onChange={(e) => {
-                setInputKey(e.target.value);
+                setInputKey(e.target.value)
               }}
             />
           </div>
@@ -222,5 +222,5 @@ export function SheetBot({ isOpen, refreshList, botActive }: Props) {
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

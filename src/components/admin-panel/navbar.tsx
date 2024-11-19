@@ -1,8 +1,8 @@
-import { GoToStudio } from "@/components/admin-panel/go-to-studio";
-import { SheetMenu } from "@/components/admin-panel/sheet-menu";
+import { GoToStudio } from "@/components/admin-panel/go-to-studio"
+import { SheetMenu } from "@/components/admin-panel/sheet-menu"
 
 interface NavbarProps {
-  title: string;
+  title: string
 }
 
 export function Navbar({ title }: NavbarProps) {
@@ -16,9 +16,9 @@ export function Navbar({ title }: NavbarProps) {
         </div>
         <div className="flex flex-1 items-center justify-end  ">
           {/* <ModeToggle /> */}
-          <GoToStudio />
+          {/* <GoToStudio /> */}
         </div>
       </div>
     </header>
-  );
+  )
 }

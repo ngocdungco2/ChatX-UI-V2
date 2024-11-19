@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
-import { ChevronDown, LucideIcon } from "lucide-react";
+import Link from "next/link"
+import { useEffect, useState, useTransition } from "react"
+import { ChevronDown, LucideIcon } from "lucide-react"
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger
-} from "@/components/ui/collapsible";
+} from "@/components/ui/collapsible"
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
   TooltipProvider
-} from "@/components/ui/tooltip";
+} from "@/components/ui/tooltip"
 import {
   DropdownMenu,
   DropdownMenuItem,
@@ -25,28 +25,27 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuSeparator
-} from "@/components/ui/dropdown-menu";
-import Image from "next/image";
-import { SheetBot } from "../bot-sheet";
-import { ContextMenuSidebar } from "../context-sidebar";
-import useLocalStorage from "@/hooks/use-localstorage";
+} from "@/components/ui/dropdown-menu"
+import Image from "next/image"
+import { ContextMenuSidebar } from "../context-sidebar"
+import useLocalStorage from "@/hooks/use-localstorage"
 
 type Submenu = {
-  href: string;
-  label: string;
-  active: boolean;
-  key?: string;
-  tag?: string;
-  setActiveKey?: any;
-  botActive?: Boolean;
-};
+  href: string
+  label: string
+  active: boolean
+  key?: string
+  tag?: string
+  setActiveKey?: any
+  botActive?: Boolean
+}
 
 interface CollapseMenuButtonProps {
-  icon: LucideIcon;
-  label: string;
-  active: boolean;
-  submenus: Submenu[];
-  isOpen: boolean | undefined;
+  icon: LucideIcon
+  label: string
+  active: boolean
+  submenus: Submenu[]
+  isOpen: boolean | undefined
   // setActiveKey: any;
 }
 
@@ -58,8 +57,8 @@ export function CollapseMenuButton({
   isOpen
 }: // setActiveKey
 CollapseMenuButtonProps) {
-  const isSubmenuActive = submenus.some((submenu) => submenu.active);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive);
+  const isSubmenuActive = submenus.some((submenu) => submenu.active)
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(isSubmenuActive)
 
   return isOpen ? (
     <Collapsible
@@ -113,14 +112,6 @@ CollapseMenuButtonProps) {
           ) => (
             // this
             <div key={index}>
-              {index === 0 && key && (
-                <SheetBot
-                  isOpen={isOpen}
-                  refreshList={setActiveKey}
-                  botActive={botActive}
-                />
-              )}
-
               <ContextMenuSidebar
                 apiKey={key}
                 chatId={href}
@@ -137,8 +128,8 @@ CollapseMenuButtonProps) {
                   )}
                   onClick={() => {
                     if (tag) {
-                      setActiveKey(key, tag);
-                      window.dispatchEvent(new Event("storage"));
+                      setActiveKey(key, tag)
+                      window.dispatchEvent(new Event("storage"))
                     }
                   }}
                   asChild
@@ -233,5 +224,5 @@ CollapseMenuButtonProps) {
         <DropdownMenuArrow className="fill-border" />
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

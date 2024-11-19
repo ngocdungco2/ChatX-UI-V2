@@ -1,6 +1,6 @@
-import React from "react";
-import { Hand, ShieldQuestion, Clock } from "lucide-react";
-import Image from "next/image";
+import React from "react"
+import { Hand, ShieldQuestion, Clock } from "lucide-react"
+import Image from "next/image"
 
 const prePrompts = [
   {
@@ -23,28 +23,28 @@ const prePrompts = [
     title: "Tìm trợ giúp",
     description: "Tôi có 1 câu hỏi"
   }
-];
+]
 
 type Props = {
-  setInput: React.Dispatch<React.SetStateAction<string>>;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
-};
+  setInput: React.Dispatch<React.SetStateAction<string>>
+  handleSubmit: (e: React.FormEvent) => Promise<void>
+}
 
 export default function PrePrompts({ setInput, handleSubmit }: Props) {
   const sendPrePrompt = (description: string) => {
-    setInput(description);
+    setInput(description)
     // @ts-ignore
     // handleSubmit(new Event("submit"));
-  };
+  }
 
   return (
     <div className="inset-0 flex flex-col items-center justify-center h-dvh absolute lg:left-[10%] left-[5%]">
       <Image
-        src={"/logopurple.svg"}
+        src={"/logoSite.png"}
         alt="logo"
-        width={0}
-        height={0}
-        className="w-[150px] h-auto opacity-80 lg:block hidden"
+        width={90}
+        height={20}
+        className="w-[90px] h-auto lg:block hidden"
         priority={true}
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
@@ -63,5 +63,5 @@ export default function PrePrompts({ setInput, handleSubmit }: Props) {
         ))}
       </div>
     </div>
-  );
+  )
 }
