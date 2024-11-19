@@ -1,32 +1,32 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { Ellipsis, LogOut } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { getMenuList } from "@/lib/menu-list";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { CollapseMenuButton } from "@/components/admin-panel/collapse-menu-button";
+import Link from "next/link"
+import { Ellipsis, LogOut } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { cn } from "@/lib/utils"
+import { getMenuList } from "@/lib/menu-list"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { CollapseMenuButton } from "@/components/admin-panel/collapse-menu-button"
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
   TooltipProvider
-} from "@/components/ui/tooltip";
-import { SheetName } from "../nameSheet";
-import { SheetBot } from "../bot-sheet";
-import Image from "next/image";
-import { useState } from "react";
+} from "@/components/ui/tooltip"
+import { SheetName } from "../nameSheet"
+import { SheetBot } from "../bot-sheet"
+import Image from "next/image"
+import { useState } from "react"
 
 interface MenuProps {
-  isOpen: boolean | undefined;
+  isOpen: boolean | undefined
 }
 
 export function Menu({ isOpen }: MenuProps) {
-  const pathname = usePathname();
-  const menuList = getMenuList(pathname);
-  const router = useRouter();
+  const pathname = usePathname()
+  const menuList = getMenuList(pathname)
+  const router = useRouter()
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -67,6 +67,7 @@ export function Menu({ isOpen }: MenuProps) {
                               asChild
                             >
                               <Link
+                                // @ts-ignore
                                 href={href}
                                 scroll={false}
                                 onClick={() =>
@@ -150,5 +151,5 @@ export function Menu({ isOpen }: MenuProps) {
         </ul>
       </nav>
     </ScrollArea>
-  );
+  )
 }
