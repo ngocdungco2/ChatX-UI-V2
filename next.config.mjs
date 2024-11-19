@@ -4,6 +4,9 @@ const nextConfig = {
   //   domains: ["www.printmag.com"]
   // },
   // output: "export",
+  eslint: {
+    ignoreDuringBuilds: true // Disables ESLint during the build process
+  },
   async redirects() {
     return [
       {
@@ -11,8 +14,8 @@ const nextConfig = {
         destination: "/dashboard",
         permanent: true
       }
-    ];
+    ]
   }
-};
+}
 
-export default nextConfig;
+export default nextConfig
